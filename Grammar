@@ -1,0 +1,7 @@
+Exp = If Exp Then Exp Else Exp 
+    | Let (var : Type) In Exp
+    | Exp + Exp | Exp * Exp | Exp / Exp | Exp - Exp
+    | EOL | EOF | Int
+    | ( Exp )
+
+Type : Int | Bool | Type -> Type
