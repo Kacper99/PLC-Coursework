@@ -35,6 +35,7 @@ $white+     ;
   do            { tok (\p s -> TokenDo p)}
   \(            { tok (\p s -> TokenLParen p)}
   \)            { tok (\p s -> TokenRParen p)}
+  stream\[      { tok )\p s -> TokenOpenStream} 
   $alpha [$slpha $digit \_ \']* { tok (\p s -> TokenVar p s)}
   
 {

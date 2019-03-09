@@ -1,0 +1,5 @@
+sum = 0;
+foreach {
+    sum += stream[0];
+    print(sum);
+}

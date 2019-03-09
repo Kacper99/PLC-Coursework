@@ -1,0 +1,7 @@
+foreach {
+    print(stream[0]);
+    print(stream[0]);
+    printLn();
+}
+
+    

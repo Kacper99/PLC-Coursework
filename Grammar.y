@@ -58,14 +58,13 @@ Exp : if Bool then Exp else Exp                 { Cond $2 $4 $6 }
     | Exp '*' Exp                               { Mul $1 $3 }
     | Exp Exp %prec APP                         { App $1 $2 }
     | '(' Exp ')'                               { $2 }
-    | Int                                       { Int $1 }
-    | Bool                                      { Bool $1 }
 
 Bool : check Exp                                { Check $2 }
 
 Type : Int                                      { Int }
     | Bool                                      { Bool } 
     | Type arr Type                             { Fun $1 $3 }
+
 
 {
     parseError :: [Token] -> a
