@@ -12,10 +12,13 @@ $white+     ;
   Bool          { tok (\p s -> TokenTypeBool p)}
   Int           { tok (\p s -> TokenTypeInt p)}
   "->"          { tok (\p s -> TokenTypeArr p)}
+  \:            { tok (\p s -> TokenHasType p)}
+  \\            { tok (\p s -> TokenLambda p)}
   check         { tok (\p s -> TokenCheck p)}
   $digit+       { tok (\p s -> TokenInt p (read s))}
   true          { tok (\p s -> TokenTrue p)}
   false         { tok (\p s -> TokenFalse p)}
+  var           { tok (\p s -> TokenVar p)}
   \+            { tok (\p s -> TokenPlus p)}
   \-            { tok (\p s -> TokenMinus p)}
   \/            { tok (\p s -> TokenDiv p)}
@@ -45,7 +48,8 @@ $white+     ;
     TokenCheck AlexPosn           |
     TokenTrue AlexPosn            |
     TokenFalse AlexPosn           |
-    TokenVar AlexPosn String
+    TokenVar AlexPosn String      |
+    TokenLambda AlexPosn          |
     TokenAdd AlexPosn             |
     TokenSub AlexPosn             |
     TokenDiv AlexPosn             |
@@ -74,6 +78,7 @@ tokenPosn (TokenCheck (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenTrue (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenFalse (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenVar (AlexPn a l c) _) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenLambda (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenAdd (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenSub (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenDiv (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
