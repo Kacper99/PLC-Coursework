@@ -26,6 +26,8 @@ $white+     ;
   \<            { tok (\p s -> TokenLT p)}
   \>            { tok (\p s -> TokenMT p)}
   \=            { tok (\p s -> TokenEq p)}
+  \+=           { tok (\p s -> TokenPlusEquals p)}
+  \-=           { tok (\p s -> TokenMinusEquals p)}
   if            { tok (\p s -> TokenIf p)}
   then          { tok (\p s -> TokenThen p)}
   else          { tok (\p s -> TokenElse p)}
@@ -35,7 +37,18 @@ $white+     ;
   do            { tok (\p s -> TokenDo p)}
   \(            { tok (\p s -> TokenLParen p)}
   \)            { tok (\p s -> TokenRParen p)}
-  stream\[      { tok )\p s -> TokenOpenStream} 
+  stream\[      { tok (\p s -> TokenOpenStream p} 
+  \]            { tok (\p s -> TokenCloseStream p)}
+  print         { tok (\p s -> TokenPrint p)}
+  println       { tok (\p s -> TokenPrintLine p)}
+  \;            { tok (\p s -> TokenEndOfLine p)}
+  \{            { tok (\p s -> TokenLeftCurly p)}
+  \}            { tok (\p s -> TokenRightCurly p)}
+  \&&           { tok (\p s -> TokenAnd p)}
+  \||           { tok (\p s -> TokenOr p)}
+  \!            { tok (\p s -> TokenNot p)}
+  \!=           { tok (\p s -> TokenNotEqual p)}
+  \~            { tok (\p s -> TokenConcatenate p)}
   $alpha [$slpha $digit \_ \']* { tok (\p s -> TokenVar p s)}
   
 {

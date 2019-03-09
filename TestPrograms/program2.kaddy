@@ -3,5 +3,3 @@ foreach {
     print(stream[0]);
     printLn();
 }
-
-    
