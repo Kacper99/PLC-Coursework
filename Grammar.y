@@ -7,13 +7,11 @@
 %tokenType { Token }
 %error { parseError }
 %tokenType
-    Bool        { TokenBool _ }
-    Int         { TokenInt _ }
-    arr         { TokenArr _ }
-    check       { TokenCheck _ }
-    digit       { TokenDigit _ $$ }
-    true        { TokenTrue }
-    false       { TokenFalse }
+    Bool        { TokenTypeBool _ }
+    Int         { TokenTypeInt _ }
+    int         { TokenDigit _ $$ }
+    true        { TokenTrue _}
+    false       { TokenFalse _}
     var         { TokenVar _ $$ } 
     '+'         { TokenAdd _ }
     '-'         { TokenSub _ }
@@ -35,10 +33,10 @@
     stream\[    { TokenOpenStream _}
     \]          { TokenCloseStream _}
     print       { TokenPrint _}
-    println     { TokenPrintLn _}
+    println     { TokenPrintLine _}
     \;          { TokenEndStatement _}
-    \{          { TokenOpenCurly _}
-    \}          { TokenCloseCurly _}
+    \{          { TokenLeftCurly _}
+    \}          { TokenRightCurly _}
     \&&         { TokenAnd _}
     \||         { TokenOr _}
     \!          { TokenNot _}

@@ -11,10 +11,6 @@ $white+     ;
   "--".*    ;
   Bool          { tok (\p s -> TokenTypeBool p)}
   Int           { tok (\p s -> TokenTypeInt p)}
-  "->"          { tok (\p s -> TokenTypeArr p)}
-  \:            { tok (\p s -> TokenHasType p)}
-  \\            { tok (\p s -> TokenLambda p)}
-  check         { tok (\p s -> TokenCheck p)}
   $digit+       { tok (\p s -> TokenInt p (read s))}
   true          { tok (\p s -> TokenTrue p)}
   false         { tok (\p s -> TokenFalse p)}
@@ -41,7 +37,7 @@ $white+     ;
   \]            { tok (\p s -> TokenCloseStream p)}
   print         { tok (\p s -> TokenPrint p)}
   println       { tok (\p s -> TokenPrintLine p)}
-  \;            { tok (\p s -> TokenEndOfLine p)}
+  \;            { tok (\p s -> TokenEndStatement p)}
   \{            { tok (\p s -> TokenLeftCurly p)}
   \}            { tok (\p s -> TokenRightCurly p)}
   \&&           { tok (\p s -> TokenAnd p)}
