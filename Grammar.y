@@ -30,18 +30,18 @@
     do          { TokenDo _ }
     '('         { TokenLParen _ }
     ')'         { TokenRParen _ }
-    stream\[    { TokenOpenStream _}
-    \]          { TokenCloseStream _}
+    stream[     { TokenOpenStream _}
+    ']'         { TokenCloseStream _}
     print       { TokenPrint _}
     println     { TokenPrintLine _}
-    \;          { TokenEndStatement _}
-    \{          { TokenLeftCurly _}
-    \}          { TokenRightCurly _}
-    \&&         { TokenAnd _}
-    \||         { TokenOr _}
-    \!          { TokenNot _}
-    \!=         { TokenNotEqual _}
-    \~          { TokenConcatenate _}
+    ';'         { TokenEndStatement _}
+    '{'         { TokenLeftCurly _}
+    '}'         { TokenRightCurly _}
+    &&          { TokenAnd _}
+    ||          { TokenOr _}
+    '!'         { TokenNot _}
+    !=          { TokenNotEqual _}
+    '~'         { TokenConcatenate _}
 
 %%
 Exp : 
