@@ -80,7 +80,18 @@ $white+     ;
     TokenDo AlexPosn              |
     TokenLParen AlexPosn          |
     TokenRParen AlexPosn          |
-
+    TokenOpenStream AlexPosn      |
+    TokenCloseStream AlexPosn     |
+    TokenPrint AlexPosn           |
+    TokenPrintLine AlexPosn       |   
+    TokenEndOfLine AlexPosn       |
+    TokenLeftCurly AlexPosn       |
+    TokenRightCurly AlexPosn      |
+    TokenAnd AlexPosn             |
+    TokenOr AlexPosn              |
+    TokenNot AlexPosn             |
+    TokenNotEqual AlexPosn        |
+    TokenConcatenate AlexPosn     
     deriving (Eq, Show)
 
 tokenPosn :: Token -> String
@@ -109,4 +120,17 @@ tokenPosn (TokenWhile (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenDo (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenLParen (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenRParen (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenOpenStream (AlexPn a l c)) = show (l) ++ ":" ++ show(c)
+tokenPosn (TokenCloseStream (AlexPn a l c)) = show (l) ++ ":" ++ show(c)
+tokenPosn (TokenPrint (AlexPn a l c)) = show (l) ++ ":" ++ show(c)
+tokenPosn (TokenPrintLine (AlexPn a l c)) = show (l) ++ ":" ++ show(c)
+tokenPosn (TokenEndOfLine (AlexPn a l c)) = show (l) ++ ":" ++ show(c)
+tokenPosn (TokenLeftCurly (AlexPn a l c)) = show (l) ++ ":" ++ show(c)
+tokenPosn (TokenRightCurly (AlexPn a l c)) = show (l) ++ ":" ++ show(c)
+tokenPosn (TokenAnd (AlexPn a l c)) = show (l) ++ ":" ++ show(c)
+tokenPosn (TokenOr (AlexPn a l c)) = show (l) ++ ":" ++ show(c)
+tokenPosn (TokenNot (AlexPn a l c)) = show (l) ++ ":" ++ show(c)
+tokenPosn (TokenNotEqual (AlexPn a l c)) = show (l) ++ ":" ++ show(c)
+tokenPosn (TokenConcatenate (AlexPn a l c)) = show (l) ++ ":" ++ show(c)
+
 }
