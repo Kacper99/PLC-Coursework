@@ -27,8 +27,6 @@ $white+     ;
   if            { tok (\p s -> TokenIf p)}
   then          { tok (\p s -> TokenThen p)}
   else          { tok (\p s -> TokenElse p)}
-  for           { tok (\p s -> TokenFor p)}
-  next          { tok (\p s -> TokenNext p)}
   while         { tok (\p s -> TokenWhile p)}
   do            { tok (\p s -> TokenDo p)}
   \(            { tok (\p s -> TokenLParen p)}
@@ -45,7 +43,7 @@ $white+     ;
   \!            { tok (\p s -> TokenNot p)}
   \!=           { tok (\p s -> TokenNotEqual p)}
   \~            { tok (\p s -> TokenConcatenate p)}
-  $alpha [$slpha $digit \_ \']* { tok (\p s -> TokenVar p s)}
+  $alpha [$alpha $digit \_ \']* { tok (\p s -> TokenVar p s)}
   
 {
   tok f p s = f p s
@@ -70,8 +68,6 @@ $white+     ;
     TokenIf AlexPosn              |
     TokenThen AlexPosn            |
     TokenElse AlexPosn            |
-    TokenFor AlexPosn             |
-    TokenNext AlexPosn            |
     TokenWhile AlexPosn           |
     TokenDo AlexPosn              |
     TokenLParen AlexPosn          |
@@ -110,8 +106,6 @@ tokenPosn (TokenEq (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenIf (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenThen (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenElse (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
-tokenPosn (TokenFor (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
-tokenPosn (TokenNext (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenWhile (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenDo (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenLParen (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
