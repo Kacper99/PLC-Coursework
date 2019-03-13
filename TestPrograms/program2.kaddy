@@ -3,3 +3,7 @@ foreach {
     print(stream[0]);
     printLn();
 }
+
+foreach n in stream[0] {
+    print(n + " " + n)
+}

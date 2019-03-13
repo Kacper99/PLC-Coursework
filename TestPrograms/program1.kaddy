@@ -2,3 +2,6 @@ print(0)
 foreach {
     print(stream[0])
 }
+
+0 ++ stream[0]
+print(stream[0])

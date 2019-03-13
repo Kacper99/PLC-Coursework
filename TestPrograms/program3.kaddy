@@ -1,3 +1,7 @@
 foreach {
     print(stream[0] + 3*stream[1]);
 }
+
+iterate 0 to stream.length {
+    
+}

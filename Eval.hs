@@ -27,10 +27,10 @@ data Frame = HCompare Expr Environment
             | HIf Expr Expr Environment | HWhile Bool Expr
             | AddH Expr Expr | SubH Expr Expr
             | DivH Expr Expr | MulH Expr Expr
-            | AppH Expr Expr 
 
 type Kontinuation = [ Frame ]
-type State = (Expr,Environment,Kontinuation)
+-- type State = (Expr,Environment,Kontinuation)
+type State = (Expr, Enviroment)
 
 -- Function to unpack a closure to extract underlying lambda term and environment
 unpack :: Expr -> Environment -> (Expr,Environment)
@@ -85,4 +85,8 @@ eval1 (v,env,[]) | isValue v = (v,env,[])
 -- Evaluation rules for application
 
 
+evalLoop :: Expr -> Expr
+evalLoop e = evalLoop' (e, [], [])
+    where evaloop' (e, env, k) = if (e' == e) && (isValue e') then e' else evalLoop' (e', env', k')
+        where (e', env', k') = eval (e, env, k)
 
