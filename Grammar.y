@@ -38,17 +38,29 @@ import Tokens
     '!='        { TokenNotEqual _ }
     '=='        { TokenEqual _ }
 
-%right ';' -- Might need to remove this
-%left '+'
+%right '='
+%left '+' '-'
+%left '*' '/'
+%right ';'
 
 %%
+Statements : Block ';' Statements { $1 : $3}
+           | Block { [$1] }
+
+Block : Exp                                                   { $1 }
+      | if BoolExp then Exp else Exp                          { TmIf $2 $4 $6}
+
 Exp : var '=' Exp                                             { TmSetVar $1 $3}
     | Exp '+' Exp                                             { TmAdd $1 $3}
 
     | int                                                     { TmInt $1 }
     | var                                                     { TmVar $1 }
 
-    | Exp ';' Exp                                             { TmApp $1 $3}
+BoolExp : Exp '<' Exp                                         { TmLT $1 $3}
+        | Exp '>' Exp                                         { TmMT $1 $3}
+        | true                                                { TmTrue }
+        | false                                               { TmFalse }
+
 {
 parseError :: [Token] -> a
 parseError _ = error "Parse error"
@@ -59,10 +71,14 @@ data Type = Int | Bool
 
 type Environment = [ (String,Expr) ]
 
-data Expr = TmSetVar String Expr
+data Expr = TmIf Expr Expr Expr
+          | TmSetVar String Expr
           | TmAdd Expr Expr
           | TmInt Int
-          | TmApp Expr Expr
           | TmVar String
+
+          | TmLT Expr Expr
+          | TmMT Expr Expr
+          | TmTrue | TmFalse
           deriving (Show,Eq)
 }
