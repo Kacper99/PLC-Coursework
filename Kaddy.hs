@@ -11,10 +11,12 @@ main = catch main' noParse
 main' = do fileName <- getLine 
            sourceText <- readFile fileName
            putStrLn ("Parsing : " ++ sourceText)
-           let parsedProg = parseCalc (alexScanTokens sourceText)
+           let sourceTokens = alexScanTokens sourceText
+           putStrLn ("Tokens: " ++ (show sourceTokens))
+           let parsedProg = parseCalc sourceTokens
            putStrLn ("Parsed as " ++ (show parsedProg) ++ "\n")
            let result = evalLoop (parsedProg)
-           putStrLn ("Evaluates to " ++ (unparse result) ++ "\n")
+           putStrLn ("Evaluates to " ++ (show result) ++ "\n")
 
 noParse :: ErrorCall -> IO ()
 noParse e = do let err =  show e

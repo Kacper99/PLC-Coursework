@@ -38,13 +38,17 @@ import Tokens
     '!='        { TokenNotEqual _ }
     '=='        { TokenEqual _ }
 
+%right ';' -- Might need to remove this
+%left '+'
+
 %%
 Exp : var '=' Exp                                             { TmSetVar $1 $3}
     | Exp '+' Exp                                             { TmAdd $1 $3}
 
     | int                                                     { TmInt $1 }
+    | var                                                     { TmVar $1 }
 
-    | Exp Exp                                                 { TmApp $1 $2}
+    | Exp ';' Exp                                             { TmApp $1 $3}
 {
 parseError :: [Token] -> a
 parseError _ = error "Parse error"
@@ -59,5 +63,6 @@ data Expr = TmSetVar String Expr
           | TmAdd Expr Expr
           | TmInt Int
           | TmApp Expr Expr
+          | TmVar String
           deriving (Show,Eq)
 }
