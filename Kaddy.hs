@@ -12,7 +12,7 @@ main' = do fileName <- getLine
            sourceText <- readFile fileName
            putStrLn ("Parsing : " ++ sourceText)
            let sourceTokens = alexScanTokens sourceText
-           putStrLn ("Tokens: " ++ (show sourceTokens))
+           -- putStrLn ("Tokens: " ++ (show sourceTokens))
            let parsedProg = parseCalc sourceTokens
            putStrLn ("Parsed as " ++ (show parsedProg) ++ "\n")
            let result = evalLoop (parsedProg)

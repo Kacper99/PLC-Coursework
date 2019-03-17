@@ -48,16 +48,17 @@ Statements : Block ';' Statements { $1 : $3}
            | Block { [$1] }
 
 Block : Exp                                                   { $1 }
-      | if BoolExp then Exp else Exp                          { TmIf $2 $4 $6}
+      | if BoolExp then Exp else Exp                          { TmIf $2 $4 $6 }
 
-Exp : var '=' Exp                                             { TmSetVar $1 $3}
-    | Exp '+' Exp                                             { TmAdd $1 $3}
+Exp : var '=' Exp                                             { TmSetVar $1 $3 }
+    | Exp '+' Exp                                             { TmAdd $1 $3 }
+    | Exp '-' Exp                                             { TmSub $1 $3 }
 
     | int                                                     { TmInt $1 }
     | var                                                     { TmVar $1 }
 
-BoolExp : Exp '<' Exp                                         { TmLT $1 $3}
-        | Exp '>' Exp                                         { TmMT $1 $3}
+BoolExp : Exp '<' Exp                                         { TmLT $1 $3 }
+        | Exp '>' Exp                                         { TmGT $1 $3 }
         | true                                                { TmTrue }
         | false                                               { TmFalse }
 
@@ -73,12 +74,15 @@ type Environment = [ (String,Expr) ]
 
 data Expr = TmIf Expr Expr Expr
           | TmSetVar String Expr
+
           | TmAdd Expr Expr
+          | TmSub Expr Expr
+
           | TmInt Int
           | TmVar String
 
           | TmLT Expr Expr
-          | TmMT Expr Expr
+          | TmGT Expr Expr
           | TmTrue | TmFalse
           deriving (Show,Eq)
 }
