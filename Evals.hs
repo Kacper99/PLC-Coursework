@@ -2,24 +2,7 @@ module Evals where
 import Grammar
 
 -- Data structure as defined in Grammar.y:
--- data Type = Int | Bool | Fun Type Type
--- deriving (Show,Eq)
--- 
 -- type Environment = [ (String,Exp) ]
--- 
--- data Expr = Cond Bool Expr Expr
---     | LT Expr Expr | GT Expr Expr | ET Expr Expr
---     | if Bool Expr Expr
---     | For Int Expr
---     | While Bool Expr
---     | Lam String Type Expr
---     | Add Expr Expr | Sub Expr Expr
---     | Div Expr Expr | Mul Expr Expr
---     | Var String
---     | App Expr Expr
---     | Int Int
---     | True | False
---     | Cl String Type Expr Environment
 
 data Frame = HCompare Expr Environment
             | LTH Expr Expr | MTH Expr Expr | ETH Expr Expr
@@ -56,13 +39,6 @@ eval ((TmGT e1 e2), env) | e1n > e2n = (TmTrue, env)
 
 -- Adding
 eval ((TmAdd (TmInt n) (TmInt m)), env) = (TmInt (n + m), env)
--- eval ((TmAdd (TmVar s) (TmInt m)), env) = (TmInt (n + m), env)
---                                         where (TmInt n) = getVarBinding s env
--- eval ((TmAdd (TmInt n) (TmVar s)), env) = (TmInt (n + m), env)
---                                         where (TmInt m) = getVarBinding s env
--- eval ((TmAdd (TmVar s1) (TmVar s2)), env) = (TmInt (n + m), env)
---                                         where (TmInt n) = getVarBinding s1 env
---                                               (TmInt m) = getVarBinding s2 env
 eval ((TmAdd e1 e2), env) = eval ((TmAdd e1' e2'), env)
                           where (e1', _) = eval (e1, env)
                                 (e2', _) = eval (e2, env)
@@ -77,7 +53,7 @@ eval ((TmAdd e1 e2), env) = eval ((TmAdd e1' e2'), env)
                         
 -- Subtracting
 eval ((TmSub (TmInt n) (TmInt m)), env) = (TmInt (n - m), env)
-eval ((TmSub (TmVar s) (TmInt m)), env) = (TmInt (n - m), env)
+eval ((TmSub (TmVar s) (TmInt m)), env) = (TmInt (n - m), env) -- TODO: Fix this shit
                                         where (TmInt n) = getVarBinding s env
 eval ((TmSub (TmInt n) (TmVar s)), env) = (TmInt (n - m), env)
                                         where (TmInt m) = getVarBinding s env
