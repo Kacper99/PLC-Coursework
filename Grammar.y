@@ -41,17 +41,17 @@ import Tokens
 %right '='
 %left '+' '-'
 %left '*' '/'
-%right ';'
+%left ';'
 
 %%
-Statements : Block ';' Statements { $1 : $3}
-           | Block { [$1] }
+Statements : Block ';' Statements { $1 : $3 }
+           | Block ';' { [$1] }
 
 Block : Exp                                                   { $1 }
-      | if BoolExp then Exp else Exp                          { TmIf $2 $4 $6 }
+      | var '=' Exp                                           { TmSetVar $1 $3}
+      | if '(' BoolExp ')' then '{' Statements '}' else '{' Statements '}'            { TmIf $3 $7 $11 }
 
-Exp : var '=' Exp                                             { TmSetVar $1 $3 }
-    | Exp '+' Exp                                             { TmAdd $1 $3 }
+Exp : Exp '+' Exp                                             { TmAdd $1 $3 }
     | Exp '-' Exp                                             { TmSub $1 $3 }
 
     | int                                                     { TmInt $1 }
@@ -72,7 +72,7 @@ data Type = Int | Bool
 
 type Environment = [ (String,Expr) ]
 
-data Expr = TmIf Expr Expr Expr
+data Expr = TmIf Expr [Expr] [Expr]
           | TmSetVar String Expr
 
           | TmAdd Expr Expr

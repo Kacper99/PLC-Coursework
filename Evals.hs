@@ -38,8 +38,8 @@ eval ((TmSetVar s e), env) = ((TmVar s), (s, e'):env)
                            where (e', env') = (eval (e, env))
 
 -- If statement
-eval ((TmIf b e1 e2), env) | b' == TmTrue = eval (e1, env)
-                           | b' == TmFalse = eval (e2, env)
+eval ((TmIf b e1 e2), env) | b' == TmTrue = evLoop (e1, env)
+                           | b' == TmFalse = evLoop (e2, env)
                            | otherwise = error "You've managed to fuck it up hard"
                            where (b', _) = eval (b, env)
 
@@ -55,7 +55,7 @@ eval ((TmGT e1 e2), env) | e1n > e2n = (TmTrue, env)
                                ((TmInt e2n), _) = eval (e2, env)
 
 -- Adding
--- eval ((TmAdd (TmInt n) (TmInt m)), env) = (TmInt (n + m), env)
+eval ((TmAdd (TmInt n) (TmInt m)), env) = (TmInt (n + m), env)
 -- eval ((TmAdd (TmVar s) (TmInt m)), env) = (TmInt (n + m), env)
 --                                         where (TmInt n) = getVarBinding s env
 -- eval ((TmAdd (TmInt n) (TmVar s)), env) = (TmInt (n + m), env)
@@ -63,17 +63,17 @@ eval ((TmGT e1 e2), env) | e1n > e2n = (TmTrue, env)
 -- eval ((TmAdd (TmVar s1) (TmVar s2)), env) = (TmInt (n + m), env)
 --                                         where (TmInt n) = getVarBinding s1 env
 --                                               (TmInt m) = getVarBinding s2 env
--- eval ((TmAdd e1 e2), env) = ((TmAdd e1' e2'), env)
---                           where (e1', _) = eval (e1, env)
---                                 (e2', _) = eval (e2, env)
+eval ((TmAdd e1 e2), env) = eval ((TmAdd e1' e2'), env)
+                          where (e1', _) = eval (e1, env)
+                                (e2', _) = eval (e2, env)
 
 
-eval ((TmAdd e1 e2, env)) = case (e1', e2') of
-                            (TmInt n, TmInt m) -> (TmInt (n + m), env)
-                            (e1', e2') -> if (e1 == e1') && (e2 == e2') then error "can't reduce in add" else eval ((TmAdd e1' e2'), env)
-                            _ -> error "No fucking idea"
-                            where (e1', _) = eval (e1, env)
-                                  (e2', _) = eval (e2, env)
+-- eval ((TmAdd e1 e2, env)) = case (e1', e2') of
+--                             (TmInt n, TmInt m) -> (TmInt (n + m), env)
+--                             (e1', e2') -> if (e1 == e1') && (e2 == e2') then error "can't reduce in add" else eval ((TmAdd e1' e2'), env)
+--                             _ -> error "No fucking idea"
+--                             where (e1', _) = eval (e1, env)
+--                                   (e2', _) = eval (e2, env)
                         
 -- Subtracting
 eval ((TmSub (TmInt n) (TmInt m)), env) = (TmInt (n - m), env)
@@ -95,12 +95,12 @@ evalLoop' e = evalLoop'' (e, [])
                              where (e', env') = eval (e, env)
 
 evalLoop :: [Expr] -> Expr
-evalLoop e = evLoop (e, [])
+evalLoop e = e'
+            where (e', _) = evLoop (e, [])
 
 
-evLoop :: ([Expr], Environment) -> Expr
-evLoop ((e:[]), env) = e'
-                     where (e', _) = eval (e, env)
+evLoop :: ([Expr], Environment) -> State
+evLoop ((e:[]), env) = eval (e, env)
 evLoop ((e:es), env) = evLoop (es, env')
                      where (_, env') = eval (e, env)
 
