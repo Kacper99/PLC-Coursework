@@ -56,12 +56,15 @@ Exp : Exp '+' Exp                                             { TmAdd $1 $3 }
 
     | int                                                     { TmInt $1 }
     | var                                                     { TmVar $1 }
+    | List                                                    { TmList }
 
 BoolExp : Exp '<' Exp                                         { TmLT $1 $3 }
         | Exp '>' Exp                                         { TmGT $1 $3 }
         | true                                                { TmTrue }
         | false                                               { TmFalse }
 
+List : int
+     | int List
 {
 parseError :: [Token] -> a
 parseError _ = error "Parse error"
@@ -80,6 +83,7 @@ data Expr = TmIf Expr [Expr] [Expr]
 
           | TmInt Int
           | TmVar String
+          | TmList [TmInt]
 
           | TmLT Expr Expr
           | TmGT Expr Expr

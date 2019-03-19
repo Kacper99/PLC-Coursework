@@ -4,13 +4,6 @@ import Grammar
 -- Data structure as defined in Grammar.y:
 -- type Environment = [ (String,Exp) ]
 
-data Frame = HCompare Expr Environment
-            | LTH Expr Expr | MTH Expr Expr | ETH Expr Expr
-            | HAdd Expr Environment
-            | HIf Expr Expr Environment | HWhile Bool Expr
-            | AddH Expr Expr | SubH Expr Expr
-            | DivH Expr Expr | MulH Expr Expr
-
 type State = (Expr, Environment)
 
 eval :: State -> State
@@ -53,14 +46,7 @@ eval ((TmAdd e1 e2), env) = eval ((TmAdd e1' e2'), env)
                         
 -- Subtracting
 eval ((TmSub (TmInt n) (TmInt m)), env) = (TmInt (n - m), env)
-eval ((TmSub (TmVar s) (TmInt m)), env) = (TmInt (n - m), env) -- TODO: Fix this shit
-                                        where (TmInt n) = getVarBinding s env
-eval ((TmSub (TmInt n) (TmVar s)), env) = (TmInt (n - m), env)
-                                        where (TmInt m) = getVarBinding s env
-eval ((TmSub (TmVar s1) (TmVar s2)), env) = (TmInt (n - m), env)
-                                        where (TmInt n) = getVarBinding s1 env
-                                              (TmInt m) = getVarBinding s2 env
-eval ((TmSub e1 e2), env) = ((TmSub e1' e2'), env)
+eval ((TmSub e1 e2), env) = eval ((TmSub e1' e2'), env)
                           where (e1', _) = eval (e1, env)
                                 (e2', _) = eval (e2, env)
 
