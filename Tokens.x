@@ -27,9 +27,10 @@ $white+     ;
   else          { tok (\p s -> TokenElse p)}
   while         { tok (\p s -> TokenWhile p)}
   do            { tok (\p s -> TokenDo p)}
+  \,            { tok (\p s -> TokenComma p)}
   \(            { tok (\p s -> TokenLParen p)}
   \)            { tok (\p s -> TokenRParen p)}
-  stream\[      { tok (\p s -> TokenOpenStream p)}
+  \[            { tok (\p s -> TokenOpenStream p)}
   \]            { tok (\p s -> TokenCloseStream p)}
   print         { tok (\p s -> TokenPrint p)}
   println       { tok (\p s -> TokenPrintLine p)}
@@ -65,6 +66,7 @@ data Token = TokenInt AlexPosn Int
            | TokenElse AlexPosn
            | TokenWhile AlexPosn
            | TokenDo AlexPosn
+           | TokenComma AlexPosn
            | TokenLParen AlexPosn
            | TokenRParen AlexPosn
            | TokenOpenStream AlexPosn
@@ -100,6 +102,7 @@ tokenPosn (TokenThen (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenElse (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenWhile (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenDo (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenComma (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenLParen (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenRParen (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenOpenStream (AlexPn a l c)) = show(l) ++ ":" ++ show(c)

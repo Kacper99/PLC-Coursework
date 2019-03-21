@@ -23,9 +23,10 @@ import Tokens
     else        { TokenElse _ }
     while       { TokenWhile _ }
     do          { TokenDo _ }
+    ','         { TokenComma _ }
     '('         { TokenLParen _ }
     ')'         { TokenRParen _ }
-    'stream['   { TokenOpenStream _ }
+    '['         { TokenOpenStream _ }
     ']'         { TokenCloseStream _ }
     print       { TokenPrint _ }
     println     { TokenPrintLine _ }
@@ -56,15 +57,15 @@ Exp : Exp '+' Exp                                             { TmAdd $1 $3 }
 
     | int                                                     { TmInt $1 }
     | var                                                     { TmVar $1 }
-    | List                                                    { TmList }
+    | '[' List ']'                                            { TmList $2 } --TODO: Change this to an actual way of setting a variable
 
 BoolExp : Exp '<' Exp                                         { TmLT $1 $3 }
         | Exp '>' Exp                                         { TmGT $1 $3 }
         | true                                                { TmTrue }
         | false                                               { TmFalse }
 
-List : int
-     | int List
+List : int                                                    { [TmInt $1] }
+     | int ',' List                                           { (TmInt $1) : $3 }
 {
 parseError :: [Token] -> a
 parseError _ = error "Parse error"
@@ -83,7 +84,7 @@ data Expr = TmIf Expr [Expr] [Expr]
 
           | TmInt Int
           | TmVar String
-          | TmList [TmInt]
+          | TmList [Expr]
 
           | TmLT Expr Expr
           | TmGT Expr Expr
