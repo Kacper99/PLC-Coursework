@@ -1,20 +1,16 @@
 import System.Environment
 import Control.Exception
 import System.IO
+import Data.List.Split
 
 main :: IO ()
 main = catch main' noParse
 
-main' = do (a : b ) <- getArgs 
-           contents <- getContents
-           hPutStr stdout (show contents)
-           putStrLn (show a)
-           putStrLn (show b)
-           putStrLn (show contents)
+main' = do contents <- getContents
+           let cLines = lines contents
+           hPutStr stdout (head cLines)
 
 noParse :: ErrorCall -> IO ()
 noParse e = do let err =  show e
                hPutStr stderr err
                return ()
-
-
