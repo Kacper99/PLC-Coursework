@@ -32,6 +32,8 @@ eval ((TmGT e1 e2), env) | e1n > e2n = (TmTrue, env)
 
 -- Adding
 eval ((TmAdd (TmInt n) (TmInt m)), env) = (TmInt (n + m), env)
+eval ((TmAdd e@(TmInt n) (TmList l)), env) = (TmList (e : l), env) -- Add to start of list
+eval ((TmAdd (TmList l) e@(TmInt n)), env) = (TmList (l ++ [e]), env) -- Add to end of list
 eval ((TmAdd e1 e2), env) = eval ((TmAdd e1' e2'), env)
                           where (e1', _) = eval (e1, env)
                                 (e2', _) = eval (e2, env)
