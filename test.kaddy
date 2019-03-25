@@ -1,2 +1,6 @@
-x = x + 1;
-stream0 + x;
+globals {x = 3}
+start {
+    t = stream0 + x;
+    x = x + 1;
+    t;
+}

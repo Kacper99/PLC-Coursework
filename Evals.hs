@@ -53,6 +53,11 @@ eval ((TmSub e1 e2), env) = eval ((TmSub e1' e2'), env)
                                 (e2', _) = eval (e2, env)
 
 evalLoop :: [Expr] -> Environment -> String -> State
+evalLoop ((TmGlobals e@(v:vs)):es) env line | checkIfBinded s env = evalLoop es env line
+                                                      | otherwise = evalLoop es newEnv line
+                                                      where newEnv = bindVars e env
+                                                            (TmSetVar s _ ) = v
+evalLoop ((TmStart es):_) env line = evalLoop es env line
 evalLoop prog env line = evLoop (prog, newEnv) 
                        where newEnv = (parseStream line "" 0) ++ env
 
@@ -83,3 +88,13 @@ getVarBinding :: String -> Environment -> Expr
 getVarBinding s [] = error "Failed to find binding"
 getVarBinding s ((n, e):env) | s == n = e
                              | otherwise = getVarBinding s env
+
+checkIfBinded :: String -> Environment -> Bool
+checkIfBinded s [] = False
+checkIfBinded s ((n, e): env) | s == n = True
+                              | otherwise = checkIfBinded s env
+
+bindVars :: [Expr] -> Environment -> Environment
+bindVars [] env = env
+bindVars ((TmSetVar s n):es) env = bindVars es newEnv
+                                 where newEnv = (s, n) : env

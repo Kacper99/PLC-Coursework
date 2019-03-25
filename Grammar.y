@@ -47,6 +47,9 @@ import Tokens
 %left ';'
 
 %%
+Program : start '{' Statements '}'                             { [TmStart $3] }
+        | globals '{' Vars '}' start '{' Statements '}'        { [TmGlobals $3] ++ [TmStart $7]}
+
 Statements : Block ';' Statements { $1 : $3 }
            | Block ';' { [$1] }
 
@@ -60,6 +63,9 @@ Exp : Exp '+' Exp                                             { TmAdd $1 $3 }
     | int                                                     { TmInt $1 }
     | var                                                     { TmVar $1 }
     | '[' List ']'                                            { TmList $2 } --TODO: Change this to an actual way of setting a variable
+
+Vars : var '=' int                                            { [TmSetVar $1 (TmInt $3)] }
+     | var '=' int ',' Vars                                   { (TmSetVar $1 (TmInt $3)) : $5 }
 
 BoolExp : Exp '<' Exp                                         { TmLT $1 $3 }
         | Exp '>' Exp                                         { TmGT $1 $3 }
@@ -91,5 +97,8 @@ data Expr = TmIf Expr [Expr] [Expr]
           | TmLT Expr Expr
           | TmGT Expr Expr
           | TmTrue | TmFalse
+
+          | TmStart [Expr]
+          | TmGlobals [Expr]
           deriving (Show,Eq)
 }

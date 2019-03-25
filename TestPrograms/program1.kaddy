@@ -1,12 +1,6 @@
-print(0)
-foreach {
-    print(stream[0])
-}
-
----
-globals {x = 0}
+globals {temp = 0}
 start {
-    temp = x;
-    x = stream0;
-    temp;
+    out = temp;
+    temp = stream0;
+    out;
 }

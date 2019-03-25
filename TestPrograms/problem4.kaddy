@@ -1,5 +1,5 @@
-sum = 0;
-foreach {
-    sum += stream[0];
-    print(sum);
+globals {acc = 0}
+start {
+    acc = acc + stream0;
+    acc;
 }
