@@ -3,5 +3,13 @@ foreach {
     print(stream[0])
 }
 
-0 ++ stream[0]
-print(stream[0])
+---
+
+0 + stream[0];
+
+begin {
+
+}
+output {
+    > s1 > s1
+}
