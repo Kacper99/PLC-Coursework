@@ -52,15 +52,13 @@ eval ((TmSub e1 e2), env) = eval ((TmSub e1' e2'), env)
                           where (e1', _) = eval (e1, env)
                                 (e2', _) = eval (e2, env)
 
+evalLoop :: [Expr] -> Environment -> String -> State
+evalLoop prog env line = evLoop (prog, newEnv) 
+                       where newEnv = (parseStream line "" 0) ++ env
 
-evalLoop' :: Expr -> Expr
-evalLoop' e = evalLoop'' (e, [])
-    where evalLoop'' (e, env) = if (isValue e') then e' else evalLoop'' (e', env')
-                             where (e', env') = eval (e, env)
-
-evalLoop :: [Expr] -> Expr
-evalLoop e = e'
-            where (e', _) = evLoop (e, [])
+-- evalLoop :: [Expr] -> Expr
+-- evalLoop e = e'
+--             where (e', _) = evLoop (e, [])
 
 
 evLoop :: ([Expr], Environment) -> State
@@ -68,6 +66,13 @@ evLoop ((e:[]), env) = eval (e, env)
 evLoop ((e:es), env) = evLoop (es, env')
                      where (_, env') = eval (e, env)
 
+
+parseStream :: String -> String -> Int ->[(String, Expr)]
+parseStream [] curr acc = [("stream" ++ show (acc), TmInt (newInt))]
+                        where newInt = read curr :: Int
+parseStream (c:cs) curr acc | c == ' ' = ("stream" ++ show (acc), TmInt (newInt)) : parseStream cs "" (acc + 1)
+                            | otherwise = parseStream cs (curr ++ [c]) acc
+                            where newInt = read curr :: Int
 
 isValue :: Expr -> Bool
 isValue (TmInt _ ) = True

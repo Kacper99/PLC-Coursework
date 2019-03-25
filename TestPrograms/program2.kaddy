@@ -1,7 +1,5 @@
 foreach {
-    print(stream[0]);
-    print(stream[0]);
-    printLn();
+    stream[0], stream[0]
 }
 
 foreach n in stream[0] {

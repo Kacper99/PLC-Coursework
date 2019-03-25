@@ -45,6 +45,7 @@ import Tokens
 %left ';'
 
 %%
+Program : 
 Statements : Block ';' Statements { $1 : $3 }
            | Block ';' { [$1] }
 
