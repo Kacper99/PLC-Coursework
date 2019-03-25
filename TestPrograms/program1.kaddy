@@ -4,12 +4,9 @@ foreach {
 }
 
 ---
-
-0 + stream[0];
-
-begin {
-
-}
-output {
-    > s1 > s1
+globals {x = 0}
+start {
+    temp = x;
+    x = stream0;
+    temp;
 }

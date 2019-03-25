@@ -38,6 +38,8 @@ import Tokens
     '!'         { TokenNot _ }
     '!='        { TokenNotEqual _ }
     '=='        { TokenEqual _ }
+    globals     { TokenGlobals _ }
+    start       { TokenStart _ }
 
 %right '='
 %left '+' '-'
@@ -45,7 +47,6 @@ import Tokens
 %left ';'
 
 %%
-Program : 
 Statements : Block ';' Statements { $1 : $3 }
            | Block ';' { [$1] }
 
