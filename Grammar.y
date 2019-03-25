@@ -40,6 +40,7 @@ import Tokens
     '=='        { TokenEqual _ }
     globals     { TokenGlobals _ }
     start       { TokenStart _ }
+    '|'         { TokenPipe _ }
 
 %right '='
 %nonassoc '<' '>'
@@ -64,9 +65,17 @@ Exp : Exp '+' Exp                                             { TmAdd $1 $3 }
     | Exp '*' Exp                                             { TmMult $1 $3 }
     | Exp '/' Exp                                             { TmDiv $1 $3}
 
+    | int '|' Outs                                            { TmOut ((TmInt $1) : $3)}
+    | var '|' Outs                                            { TmOut ((TmVar $1) : $3)}
+
     | int                                                     { TmInt $1 }
     | var                                                     { TmVar $1 }
     | '[' List ']'                                            { TmList $2 } --TODO: Change this to an actual way of setting a variable
+
+Outs : int                                                    { [TmInt $1] }
+     | var                                                    { [TmVar $1] }
+     | int '|' Outs                                           { TmInt $1 : $3 }
+     | var '|' Outs                                           { TmVar $1 : $3 }
 
 Vars : var '=' int                                            { [TmSetVar $1 (TmInt $3)] }
      | var '=' int ',' Vars                                   { (TmSetVar $1 (TmInt $3)) : $5 }
@@ -74,10 +83,11 @@ Vars : var '=' int                                            { [TmSetVar $1 (Tm
 BoolExp : Exp '<' Exp                                         { TmLT $1 $3 }
         | Exp '>' Exp                                         { TmGT $1 $3 }
         | Exp '==' Exp                                        { TmEQ $1 $3 }
+        | Exp '!=' Exp                                        { TmNEQ $1 $3 }
 
         | BoolExp '&&' BoolExp                                { TmAnd $1 $3 }
         | BoolExp '||' BoolExp                                { TmOr $1 $3 }
-        
+
         | true                                                { TmTrue }
         | false                                               { TmFalse }
 
@@ -101,6 +111,8 @@ data Expr = TmIf Expr [Expr] [Expr]
           | TmMult Expr Expr
           | TmDiv Expr Expr
 
+          | TmOut [Expr]
+
           | TmInt Int
           | TmVar String
           | TmList [Expr]
@@ -108,6 +120,7 @@ data Expr = TmIf Expr [Expr] [Expr]
           | TmLT Expr Expr
           | TmGT Expr Expr
           | TmEQ Expr Expr
+          | TmNEQ Expr Expr
           | TmAnd Expr Expr
           | TmOr Expr Expr
           | TmTrue | TmFalse

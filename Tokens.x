@@ -44,6 +44,7 @@ $white+     ;
   \=\=          { tok (\p s -> TokenEqual p)}
   globals       { tok (\p s -> TokenGlobals p)}
   start         { tok (\p s -> TokenStart p)}
+  \|            { tok (\p s -> TokenPipe p)}
   $alpha [$alpha $digit \_ \']* { tok (\p s -> TokenVar p s)}
   
 {
@@ -85,6 +86,7 @@ data Token = TokenInt AlexPosn Int
            | TokenEqual AlexPosn
            | TokenGlobals AlexPosn
            | TokenStart AlexPosn
+           | TokenPipe AlexPosn
            deriving (Eq, Show)
 
 tokenPosn:: Token -> String
@@ -123,4 +125,5 @@ tokenPosn (TokenNotEqual (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenEqual (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenGlobals (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenStart (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenPipe (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 }

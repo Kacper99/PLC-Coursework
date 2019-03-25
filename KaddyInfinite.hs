@@ -12,6 +12,7 @@ main' = do (filename : _) <- getArgs
            sourceText <- readFile filename
            let sourceTokens = alexScanTokens sourceText
            let parsedProg = parseCalc sourceTokens
+           putStrLn 
            contents <- getContents
            let cLines = lines contents
            parseProgram cLines parsedProg []

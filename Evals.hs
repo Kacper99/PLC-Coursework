@@ -10,6 +10,7 @@ eval :: State -> State
 eval s@((TmInt n), env) = s -- Just return the integer
 eval ((TmVar s, env)) = (getVarBinding s env, env) -- Just return the value of the variable
 eval s@((TmList l , env)) = s
+eval ((TmOut l), env) = ((TmOut (varsToBindings l env)), env)
 
 eval ((TmSetVar s e), env) = ((TmVar s), (s, e'):env) -- Return the variable and the variable added to the environment
                            where (e', env') = (eval (e, env))
@@ -37,6 +38,10 @@ eval ((TmEQ e1 e2), env) = case (e1n, e2n) of
                            _ -> error "Wrong data types"
                          where (e1n, _) = eval (e1, env)
                                (e2n, _) = eval (e2, env)
+
+eval ((TmNEQ e1 e2), env) | eq == TmTrue = (TmFalse, env)
+                          | otherwise = (TmTrue, env)
+                          where (eq, env) = eval ((TmEQ e1 e2), env)
 
 eval ((TmAnd e1 e2), env) = if (b1 == TmTrue) && (b2 == TmTrue) then (TmTrue, env) else (TmFalse, env)
                           where (b1, _) = eval (e1, env)
@@ -95,6 +100,7 @@ isValue (TmInt _ ) = True
 isValue (TmVar _) = True
 isValue _ = False
 
+-- Variable binding stuff
 getVarBinding :: String -> Environment -> Expr
 getVarBinding s [] = error "Failed to find binding"
 getVarBinding s ((n, e):env) | s == n = e
@@ -109,3 +115,8 @@ bindVars :: [Expr] -> Environment -> Environment
 bindVars [] env = env
 bindVars ((TmSetVar s n):es) env = bindVars es newEnv
                                  where newEnv = (s, n) : env
+
+varsToBindings :: [Expr] -> Environment -> [Expr]
+varsToBindings [] env = []
+varsToBindings ((TmVar s):ls) env = (getVarBinding s env) : (varsToBindings ls env)
+varsToBindings (l:ls) env = l : (varsToBindings ls env)

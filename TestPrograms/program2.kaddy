@@ -1,7 +1,3 @@
-foreach {
-    stream[0], stream[0]
-}
-
-foreach n in stream[0] {
-    print(n + " " + n)
+start {
+    stream0 | stream0;
 }
