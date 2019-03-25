@@ -1,6 +1,7 @@
-globals {x = 3}
 start {
-    t = stream0 + x;
-    x = x + 1;
-    t;
+    if ([1, 2] == 1) then {
+        stream0;
+    } else {
+        0;
+    };
 }

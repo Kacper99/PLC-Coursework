@@ -7,17 +7,18 @@ import Grammar
 type State = (Expr, Environment)
 
 eval :: State -> State
-eval ((TmInt n), env) = ((TmInt n), env)
-eval ((TmVar s, env)) = (getVarBinding s env, env)
+eval s@((TmInt n), env) = s -- Just return the integer
+eval ((TmVar s, env)) = (getVarBinding s env, env) -- Just return the value of the variable
+eval s@((TmList l , env)) = s
 
-eval ((TmSetVar s e), env) = ((TmVar s), (s, e'):env)
+eval ((TmSetVar s e), env) = ((TmVar s), (s, e'):env) -- Return the variable and the variable added to the environment
                            where (e', env') = (eval (e, env))
 
 -- If statement
-eval ((TmIf b e1 e2), env) | b' == TmTrue = evLoop (e1, env)
-                           | b' == TmFalse = evLoop (e2, env)
+eval ((TmIf b e1 e2), env) | b' == TmTrue = evLoop (e1, env) -- If the if statement is true evaluate the left expression
+                           | b' == TmFalse = evLoop (e2, env) -- If the if statement is false evaluate the right expression instead
                            | otherwise = error "You've managed to fuck it up hard"
-                           where (b', _) = eval (b, env)
+                           where (b', _) = eval (b, env) -- Evaluate the boolean expression
 
 -- Boolean expressions
 eval ((TmLT e1 e2), env) | e1n < e2n = (TmTrue, env)
@@ -30,6 +31,21 @@ eval ((TmGT e1 e2), env) | e1n > e2n = (TmTrue, env)
                          where ((TmInt e1n), _) = eval (e1, env)
                                ((TmInt e2n), _) = eval (e2, env)
 
+eval ((TmEQ e1 e2), env) = case (e1n, e2n) of
+                           ((TmInt n), (TmInt m)) -> if n == m then (TmTrue, env) else (TmFalse, env)
+                           ((TmList l1), (TmList l2)) -> if l1 == l2 then (TmTrue, env) else (TmFalse, env)
+                           _ -> error "Wrong data types"
+                         where (e1n, _) = eval (e1, env)
+                               (e2n, _) = eval (e2, env)
+-- Multiplication
+eval ((TmMult e1 e2), env) = (TmInt (n * m), env)
+                           where ((TmInt n), _) = eval (e1, env)
+                                 ((TmInt m), _) = eval (e2, env)
+
+-- Division
+eval ((TmDiv e1 e2), env) = (TmInt (n `div` m), env)
+                          where ((TmInt n), _) = eval (e1, env)
+                                ((TmInt m), _) = eval (e2, env)
 -- Adding
 eval ((TmAdd (TmInt n) (TmInt m)), env) = (TmInt (n + m), env)
 eval ((TmAdd e@(TmInt n) (TmList l)), env) = (TmList (e : l), env) -- Add to start of list
@@ -37,14 +53,6 @@ eval ((TmAdd (TmList l) e@(TmInt n)), env) = (TmList (l ++ [e]), env) -- Add to 
 eval ((TmAdd e1 e2), env) = eval ((TmAdd e1' e2'), env)
                           where (e1', _) = eval (e1, env)
                                 (e2', _) = eval (e2, env)
-
-
--- eval ((TmAdd e1 e2, env)) = case (e1', e2') of
---                             (TmInt n, TmInt m) -> (TmInt (n + m), env)
---                             (e1', e2') -> if (e1 == e1') && (e2 == e2') then error "can't reduce in add" else eval ((TmAdd e1' e2'), env)
---                             _ -> error "No fucking idea"
---                             where (e1', _) = eval (e1, env)
---                                   (e2', _) = eval (e2, env)
                         
 -- Subtracting
 eval ((TmSub (TmInt n) (TmInt m)), env) = (TmInt (n - m), env)
@@ -60,11 +68,6 @@ evalLoop ((TmGlobals e@(v:vs)):es) env line | checkIfBinded s env = evalLoop es 
 evalLoop ((TmStart es):_) env line = evalLoop es env line
 evalLoop prog env line = evLoop (prog, newEnv) 
                        where newEnv = (parseStream line "" 0) ++ env
-
--- evalLoop :: [Expr] -> Expr
--- evalLoop e = e'
---             where (e', _) = evLoop (e, [])
-
 
 evLoop :: ([Expr], Environment) -> State
 evLoop ((e:[]), env) = eval (e, env)

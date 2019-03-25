@@ -47,8 +47,8 @@ import Tokens
 %left ';'
 
 %%
-Program : start '{' Statements '}'                             { [TmStart $3] }
-        | globals '{' Vars '}' start '{' Statements '}'        { [TmGlobals $3] ++ [TmStart $7]}
+Program : start '{' Statements '}'                            { [TmStart $3] }
+        | globals '{' Vars '}' start '{' Statements '}'       { [TmGlobals $3] ++ [TmStart $7]}
 
 Statements : Block ';' Statements { $1 : $3 }
            | Block ';' { [$1] }
@@ -59,6 +59,8 @@ Block : Exp                                                   { $1 }
 
 Exp : Exp '+' Exp                                             { TmAdd $1 $3 }
     | Exp '-' Exp                                             { TmSub $1 $3 }
+    | Exp '*' Exp                                             { TmMult $1 $3 }
+    | Exp '/' Exp                                             { TmDiv $1 $3}
 
     | int                                                     { TmInt $1 }
     | var                                                     { TmVar $1 }
@@ -69,6 +71,7 @@ Vars : var '=' int                                            { [TmSetVar $1 (Tm
 
 BoolExp : Exp '<' Exp                                         { TmLT $1 $3 }
         | Exp '>' Exp                                         { TmGT $1 $3 }
+        | Exp '==' Exp                                          { TmEQ $1 $3 }
         | true                                                { TmTrue }
         | false                                               { TmFalse }
 
@@ -89,6 +92,8 @@ data Expr = TmIf Expr [Expr] [Expr]
 
           | TmAdd Expr Expr
           | TmSub Expr Expr
+          | TmMult Expr Expr
+          | TmDiv Expr Expr
 
           | TmInt Int
           | TmVar String
@@ -96,6 +101,7 @@ data Expr = TmIf Expr [Expr] [Expr]
 
           | TmLT Expr Expr
           | TmGT Expr Expr
+          | TmEQ Expr Expr
           | TmTrue | TmFalse
 
           | TmStart [Expr]
