@@ -42,6 +42,8 @@ import Tokens
     start       { TokenStart _ }
 
 %right '='
+%nonassoc '<' '>'
+%left '&&' '||'
 %left '+' '-'
 %left '*' '/'
 %left ';'
@@ -71,7 +73,11 @@ Vars : var '=' int                                            { [TmSetVar $1 (Tm
 
 BoolExp : Exp '<' Exp                                         { TmLT $1 $3 }
         | Exp '>' Exp                                         { TmGT $1 $3 }
-        | Exp '==' Exp                                          { TmEQ $1 $3 }
+        | Exp '==' Exp                                        { TmEQ $1 $3 }
+
+        | BoolExp '&&' BoolExp                                { TmAnd $1 $3 }
+        | BoolExp '||' BoolExp                                { TmOr $1 $3 }
+        
         | true                                                { TmTrue }
         | false                                               { TmFalse }
 
@@ -102,6 +108,8 @@ data Expr = TmIf Expr [Expr] [Expr]
           | TmLT Expr Expr
           | TmGT Expr Expr
           | TmEQ Expr Expr
+          | TmAnd Expr Expr
+          | TmOr Expr Expr
           | TmTrue | TmFalse
 
           | TmStart [Expr]

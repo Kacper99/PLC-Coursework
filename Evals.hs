@@ -37,6 +37,14 @@ eval ((TmEQ e1 e2), env) = case (e1n, e2n) of
                            _ -> error "Wrong data types"
                          where (e1n, _) = eval (e1, env)
                                (e2n, _) = eval (e2, env)
+
+eval ((TmAnd e1 e2), env) = if (b1 == TmTrue) && (b2 == TmTrue) then (TmTrue, env) else (TmFalse, env)
+                          where (b1, _) = eval (e1, env)
+                                (b2, _) = eval (e2, env)
+
+eval ((TmOr e1 e2), env) = if (b1 == TmFalse) && (b2 == TmFalse) then (TmFalse, env) else (TmTrue, env)
+                         where (b1, _) = eval (e1, env)
+                               (b2, _) = eval (e2, env)
 -- Multiplication
 eval ((TmMult e1 e2), env) = (TmInt (n * m), env)
                            where ((TmInt n), _) = eval (e1, env)
