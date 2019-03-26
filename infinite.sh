@@ -1,6 +1,6 @@
 #!/bin/bash
 COUNT=0
-while [ $COUNT -lt 100 ]
+while true
 do
     echo $COUNT
     ((COUNT++))

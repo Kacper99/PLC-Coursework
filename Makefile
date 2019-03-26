@@ -14,7 +14,7 @@ DEPEND += Tokens.hs Grammar.hs Evals.hs KaddyInfinite.hs
 
 # Build an executable for Toy interpreter
 KaddyInfinite: $(DEPEND) KaddyInfinite.hs
-	ghc KaddyInfinite.hs
+	ghc --make -o myinterpreter KaddyInfinite.hs
 
 
 # Generate ML files from a parser definition file
