@@ -42,9 +42,11 @@ import Tokens
     globals     { TokenGlobals _ }
     start       { TokenStart _ }
     '|'         { TokenPipe _ }
+    '~'         { TokenGet _ }
 
 %right '='
 %nonassoc '<' '>' '(' ')' '+=' '-='
+%left '~'
 %left '&&' '||'
 %left '+' '-'
 %left '*' '/' '%'
@@ -69,6 +71,8 @@ Exp : Exp '+' Exp                                             { TmAdd $1 $3 }
 
     | var '+=' Exp                                            { TmPlusEqual $1 $3 }
     | var '-=' Exp                                            { TmMinusEqual $1 $3 }
+
+    | Exp '~' Exp                                             { TmGet $1 $3 }
 
     | int '|' Outs                                            { TmOut ((TmInt $1) : $3)}
     | var '|' Outs                                            { TmOut ((TmVar $1) : $3)}
@@ -128,6 +132,8 @@ data Expr = TmIf Expr [Expr] [Expr]
 
           | TmPlusEqual String Expr
           | TmMinusEqual String Expr
+
+          | TmGet Expr Expr
 
           | TmOut [Expr]
 

@@ -4,13 +4,13 @@ module Tokens where
 
 %wrapper "posn"
 
-$digit = 0-9
+$digit = [0-9]
 $alpha = [a-zA-Z]
 
 tokens :-
 $white+     ;
   "--".*    ;
-  $digit+       { tok (\p s -> TokenInt p (read s))}
+  \-?$digit+       { tok (\p s -> TokenInt p (read s))}
   true          { tok (\p s -> TokenTrue p)}
   false         { tok (\p s -> TokenFalse p)}
   \+            { tok (\p s -> TokenAdd p)}
@@ -44,6 +44,7 @@ $white+     ;
   globals       { tok (\p s -> TokenGlobals p)}
   start         { tok (\p s -> TokenStart p)}
   \|            { tok (\p s -> TokenPipe p)}
+  \~            { tok (\p s -> TokenGet p)}
   $alpha [$alpha $digit \_ \']* { tok (\p s -> TokenVar p s)}
   
 {
@@ -85,6 +86,7 @@ data Token = TokenInt AlexPosn Int
            | TokenGlobals AlexPosn
            | TokenStart AlexPosn
            | TokenPipe AlexPosn
+           | TokenGet AlexPosn
            deriving (Eq, Show)
 
 tokenPosn:: Token -> String
@@ -123,4 +125,5 @@ tokenPosn (TokenEqual (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenGlobals (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenStart (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenPipe (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenGet (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 }

@@ -12,7 +12,7 @@ eval ((TmVar s, env)) = (getVarBinding s env, env) -- Just return the value of t
 eval s@((TmList l , env)) = s
 eval ((TmOut l), env) = ((TmOut (varsToBindings l env)), env)
 
-eval ((TmSetVar s e), env) = ((TmVar s), (s, e'):env) -- Return the variable and the variable added to the environment
+eval ((TmSetVar s e), env) = (e', (s, e'):env) -- Return the variable and the variable added to the environment
                            where (e', env') = (eval (e, env))
 
 -- If statement
@@ -103,9 +103,14 @@ eval ((TmSub e1 e2), env) = case (e1', e2') of
                             where (e1', _) = eval (e1, env)
                                   (e2', _) = eval (e2, env)
                                   
-eval ((TmPlusEqual s e), env) = eval (TmSetVar s (TmSub (TmVar s) e), env)
+eval ((TmMinusEqual s e), env) = eval (TmSetVar s (TmSub (TmVar s) e), env)
 
-
+-- Get
+eval ((TmGet e1 e2), env) = case (e1', e2') of
+                            ((TmList l), (TmInt n)) -> if ((n >= (length l)) || (n < 0)) then error ("index " ++ show n ++ " out of bounds") else (l !! n, env)
+                            _ -> error "Incopatible types"
+                            where (e1', _) = eval (e1, env)
+                                  (e2', _) = eval (e2, env)
 
 evalLoop :: [Expr] -> Environment -> String -> State
 evalLoop ((TmGlobals e@(v:vs)):es) env line | checkIfBinded s env = evalLoop es env line

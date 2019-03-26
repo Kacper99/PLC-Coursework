@@ -1,5 +1,4 @@
-globals { a = []}
+globals {a = 1}
 start {
-    a += 1;
-    a;
+    a += -13;
 }
