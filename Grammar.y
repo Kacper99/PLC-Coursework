@@ -66,9 +66,7 @@ Exp : Exp '+' Exp                                             { TmAdd $1 $3 }
     | int '|' Outs                                            { TmOut ((TmInt $1) : $3)}
     | var '|' Outs                                            { TmOut ((TmVar $1) : $3)}
 
-    | int                                                     { TmInt $1 }
-    | var                                                     { TmVar $1 }
-    | '[' List ']'                                            { TmList $2 }
+    | Types                                                   { $1 }
 
     | '(' Exp ')'                                             { $2 }
 
@@ -77,8 +75,13 @@ Outs : int                                                    { [TmInt $1] }
      | int '|' Outs                                           { TmInt $1 : $3 }
      | var '|' Outs                                           { TmVar $1 : $3 }
 
-Vars : var '=' int                                            { [TmSetVar $1 (TmInt $3)] }
-     | var '=' int ',' Vars                                   { (TmSetVar $1 (TmInt $3)) : $5 }
+Vars : var '=' Types                                          { [TmSetVar $1 $3] }
+     | var '=' Types ',' Vars                                 { (TmSetVar $1 $3) : $5 }
+
+Types : int                                                   { TmInt $1 }
+      | var                                                   { TmVar $1 }
+      | '[' List ']'                                          { TmList $2 }
+      | '[' ']'                                               { TmList [] }
 
 BoolExp : Exp '<' Exp                                         { TmLT $1 $3 }
         | Exp '>' Exp                                         { TmGT $1 $3 }

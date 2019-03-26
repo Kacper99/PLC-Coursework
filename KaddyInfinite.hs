@@ -36,5 +36,7 @@ parseProgram (l:ls) prog env = do let (e, newEnv) = evalLoop prog env l
                                   parseProgram ls prog newEnv
                              
 printOut :: Expr -> String
-printOut (TmInt n) = (show n) ++ "\n"
-printOut (TmOut ls) = intercalate " " (map (\(TmInt n) -> (show n)) ls) ++ "\n"
+printOut (TmInt n) = (show n)
+printOut (TmList l) = "[" ++ intercalate ", " (map (\(TmInt n) -> (show n)) l) ++ "]"
+printOut (TmOut ls) = intercalate " " (map printOut ls) ++ "\n"
+printOut l = show l

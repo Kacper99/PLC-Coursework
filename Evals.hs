@@ -113,7 +113,7 @@ isValue _ = False
 
 -- Variable binding stuff
 getVarBinding :: String -> Environment -> Expr
-getVarBinding s [] = error "Failed to find binding"
+getVarBinding s [] = error ("Variable \'" ++ s ++ "\' not declared")
 getVarBinding s ((n, e):env) | s == n = e
                              | otherwise = getVarBinding s env
 
