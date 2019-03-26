@@ -1,4 +1,4 @@
-globals {a = 1}
+globals {a = [1,2]}
 start {
-    a += -13;
+    a \~ 1 + 3;
 }

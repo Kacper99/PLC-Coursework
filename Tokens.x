@@ -45,6 +45,7 @@ $white+     ;
   start         { tok (\p s -> TokenStart p)}
   \|            { tok (\p s -> TokenPipe p)}
   \~            { tok (\p s -> TokenGet p)}
+  \\\~          { tok (\p s -> TokenRemove p)}
   $alpha [$alpha $digit \_ \']* { tok (\p s -> TokenVar p s)}
   
 {
@@ -87,6 +88,7 @@ data Token = TokenInt AlexPosn Int
            | TokenStart AlexPosn
            | TokenPipe AlexPosn
            | TokenGet AlexPosn
+           | TokenRemove AlexPosn
            deriving (Eq, Show)
 
 tokenPosn:: Token -> String
@@ -126,4 +128,5 @@ tokenPosn (TokenGlobals (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenStart (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenPipe (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenGet (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenRemove (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 }

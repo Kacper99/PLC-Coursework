@@ -90,6 +90,7 @@ eval ((TmAdd e1 e2), env ) = case (e1', e2') of
                              ((TmInt n), (TmInt m)) -> (TmInt (n + m), env)
                              (e@(TmInt n), (TmList l)) -> (TmList (e : l), env) -- Add to start of list
                              ((TmList l), e@(TmInt n)) -> (TmList (l ++ [e]), env) -- Add to end of list
+                             ((TmList l1), (TmList l2)) -> (TmList (l1 ++ l2), env) -- Add two lists together
                              _ -> error "Incompatible types"
                              where (e1', _) = eval (e1, env)
                                    (e2', _) = eval (e2, env)
@@ -112,6 +113,13 @@ eval ((TmGet e1 e2), env) = case (e1', e2') of
                             where (e1', _) = eval (e1, env)
                                   (e2', _) = eval (e2, env)
 
+eval ((TmRemove e1 e2), env) = case (e1', e2') of
+                            ((TmList l), (TmInt n)) -> if ((n >= (length l)) || (n < 0)) then error ("index " ++ show n ++ " out of bounds") else (TmList (removeN n l) , env)
+                            _ -> error "Incopatible types"
+                            where (e1', _) = eval (e1, env)
+                                  (e2', _) = eval (e2, env)
+
+-- Evaluation stuff
 evalLoop :: [Expr] -> Environment -> String -> State
 evalLoop ((TmGlobals e@(v:vs)):es) env line | checkIfBinded s env = evalLoop es env line
                                                       | otherwise = evalLoop es newEnv line
@@ -139,6 +147,9 @@ isValue (TmInt _ ) = True
 isValue (TmVar _) = True
 isValue _ = False
 
+removeN :: Int -> [a] -> [a]
+removeN n xs = l ++ r
+             where (l, (_:r)) = splitAt n xs
 -- Variable binding stuff
 getVarBinding :: String -> Environment -> Expr
 getVarBinding s [] = error ("Variable \'" ++ s ++ "\' not declared")
