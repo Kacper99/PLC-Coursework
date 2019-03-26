@@ -73,10 +73,7 @@ Exp : Exp '+' Exp                                             { TmAdd $1 $3 }
     | int '|' Outs                                            { TmOut ((TmInt $1) : $3)}
     | var '|' Outs                                            { TmOut ((TmVar $1) : $3)}
 
-    | int                                                   { TmInt $1 }
-    | var                                                   { TmVar $1 }
-    | '[' List ']'                                          { TmList $2 }
-    | '[' ']'                                               { TmList [] }
+    | Types                                                   { $1 }
 
     | '(' Exp ')'                                             { $2 }
 
@@ -130,7 +127,7 @@ data Expr = TmIf Expr [Expr] [Expr]
           | TmMod Expr Expr
 
           | TmPlusEqual String Expr
-          | TmMinusEqual Expr Expr
+          | TmMinusEqual String Expr
 
           | TmOut [Expr]
 

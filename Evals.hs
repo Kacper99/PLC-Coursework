@@ -22,46 +22,46 @@ eval ((TmIf b e1 e2), env) | b' == TmTrue = evLoop (e1, env) -- If the if statem
                            where (b', _) = eval (b, env) -- Evaluate the boolean expression
 
 -- Boolean expressions
-eval ((TmLT e1 e2), env) = case (e1', e2') of
+eval ((TmLT e1 e2), env) = case (e1', e2') of -- Less than
                           ((TmInt n), (TmInt m)) -> if n < m then (TmTrue, env) else (TmFalse, env)
                           _ -> error "Incompatible types"
                           where (e1', _) = eval (e1, env)
                                 (e2', _) = eval (e2, env)
 
-eval ((TmGT e1 e2), env) = case (e1', e2') of
+eval ((TmGT e1 e2), env) = case (e1', e2') of -- Greater than
                           ((TmInt n), (TmInt m)) -> if n > m then (TmTrue, env) else (TmFalse, env)
                           _ -> error "Incompatible types"
                           where (e1', _) = eval (e1, env)
                                 (e2', _) = eval (e2, env)
                                 
-eval ((TmLTEQ e1 e2), env) = case (e1', e2') of
+eval ((TmLTEQ e1 e2), env) = case (e1', e2') of -- Less than or equal to
                           ((TmInt n), (TmInt m)) -> if n <= m then (TmTrue, env) else (TmFalse, env)
                           _ -> error "Incompatible types"
                           where (e1', _) = eval (e1, env)
                                 (e2', _) = eval (e2, env)
 
-eval ((TmGTEQ e1 e2), env) = case (e1', e2') of
+eval ((TmGTEQ e1 e2), env) = case (e1', e2') of -- Greater than or equal to
                           ((TmInt n), (TmInt m)) -> if n >= m then (TmTrue, env) else (TmFalse, env)
                           _ -> error "Incompatible types"
                           where (e1', _) = eval (e1, env)
                                 (e2', _) = eval (e2, env)
 
-eval ((TmEQ e1 e2), env) = case (e1n, e2n) of
+eval ((TmEQ e1 e2), env) = case (e1n, e2n) of -- Equal
                            ((TmInt n), (TmInt m)) -> if n == m then (TmTrue, env) else (TmFalse, env)
                            ((TmList l1), (TmList l2)) -> if l1 == l2 then (TmTrue, env) else (TmFalse, env)
                            _ -> error "Wrong data types"
                          where (e1n, _) = eval (e1, env)
                                (e2n, _) = eval (e2, env)
 
-eval ((TmNEQ e1 e2), env) | eq == TmTrue = (TmFalse, env)
+eval ((TmNEQ e1 e2), env) | eq == TmTrue = (TmFalse, env) -- Not equal
                           | otherwise = (TmTrue, env)
                           where (eq, env) = eval ((TmEQ e1 e2), env)
 
-eval ((TmAnd e1 e2), env) = if (b1 == TmTrue) && (b2 == TmTrue) then (TmTrue, env) else (TmFalse, env)
+eval ((TmAnd e1 e2), env) = if (b1 == TmTrue) && (b2 == TmTrue) then (TmTrue, env) else (TmFalse, env) -- And
                           where (b1, _) = eval (e1, env)
                                 (b2, _) = eval (e2, env)
 
-eval ((TmOr e1 e2), env) = if (b1 == TmFalse) && (b2 == TmFalse) then (TmFalse, env) else (TmTrue, env)
+eval ((TmOr e1 e2), env) = if (b1 == TmFalse) && (b2 == TmFalse) then (TmFalse, env) else (TmTrue, env) -- Or
                          where (b1, _) = eval (e1, env)
                                (b2, _) = eval (e2, env)
 -- Multiplication
@@ -84,6 +84,7 @@ eval ((TmMod e1 e2), env) = case (e1', e2') of
                             _ -> error "Incompatible types"
                             where (e1', _) = eval (e1, env)
                                   (e2', _) = eval (e2, env)
+
 -- Adding
 eval ((TmAdd e1 e2), env ) = case (e1', e2') of
                              ((TmInt n), (TmInt m)) -> (TmInt (n + m), env)
@@ -92,15 +93,19 @@ eval ((TmAdd e1 e2), env ) = case (e1', e2') of
                              _ -> error "Incompatible types"
                              where (e1', _) = eval (e1, env)
                                    (e2', _) = eval (e2, env)
+
+eval ((TmPlusEqual s e), env) = eval (TmSetVar s (TmAdd (TmVar s) e), env)
+
 -- Subtracting
 eval ((TmSub e1 e2), env) = case (e1', e2') of
                             ((TmInt n), (TmInt m)) -> (TmInt (n - m), env)
                             _ -> error "Incompatible types"
                             where (e1', _) = eval (e1, env)
                                   (e2', _) = eval (e2, env)
+                                  
+eval ((TmPlusEqual s e), env) = eval (TmSetVar s (TmSub (TmVar s) e), env)
 
-eval ((TmPlusEqual s e), env) = eval ((TmAdd (getVarBinding s env) e), env)
-eval ((TmMinusEqual s e), env) = eval ((TmSub (getVarBinding s env) e), env)
+
 
 evalLoop :: [Expr] -> Environment -> String -> State
 evalLoop ((TmGlobals e@(v:vs)):es) env line | checkIfBinded s env = evalLoop es env line
