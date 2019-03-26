@@ -56,12 +56,15 @@ eval ((TmMult e1 e2), env) = case (e1', e2') of
                              _ -> error "incompatible types"
                              where (e1', _) = eval (e1, env)
                                    (e2', _) = eval (e2, env)
-                                   
--- Division
-eval ((TmDiv e1 e2), env) = (TmInt (n `div` m), env)
-                          where ((TmInt n), _) = eval (e1, env)
-                                ((TmInt m), _) = eval (e2, env)
 
+-- Division
+eval ((TmDiv e1 e2), env) = case (e1', e2') of
+                           ((TmInt n), (TmInt m)) -> (TmInt (n `div` m), env)
+                           _ -> error "incompatible types"
+                           where (e1', _) = eval (e1, env)
+                                 (e2', _) = eval (e2, env)
+
+-- Modulus
 eval ((TmMod e1 e2), env) = case (e1', e2') of
                             ((TmInt n), (TmInt m)) -> (TmInt (n `mod` m), env)
                             _ -> error "incompatible types"
