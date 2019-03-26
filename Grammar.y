@@ -18,6 +18,8 @@ import Tokens
     '%'         { TokenMod _ }
     '<'         { TokenLT _ }
     '>'         { TokenMT _ }
+    '<='        { TokenLTEQ _ }
+    '>='        { TokenMTEQ _ }
     '='         { TokenEq _ }
     if          { TokenIf _ }
     then        { TokenThen _ }
@@ -88,6 +90,8 @@ Types : int                                                   { TmInt $1 }
 
 BoolExp : Exp '<' Exp                                         { TmLT $1 $3 }
         | Exp '>' Exp                                         { TmGT $1 $3 }
+        | Exp '<=' Exp                                        { TmLTEQ $1 $3 }
+        | Exp '>=' Exp                                        { TmGTEQ $1 $3 }
         | Exp '==' Exp                                        { TmEQ $1 $3 }
         | Exp '!=' Exp                                        { TmNEQ $1 $3 }
 
@@ -128,6 +132,8 @@ data Expr = TmIf Expr [Expr] [Expr]
 
           | TmLT Expr Expr
           | TmGT Expr Expr
+          | TmLTEQ Expr Expr
+          | TmGTEQ Expr Expr
           | TmEQ Expr Expr
           | TmNEQ Expr Expr
           | TmAnd Expr Expr

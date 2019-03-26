@@ -33,6 +33,18 @@ eval ((TmGT e1 e2), env) = case (e1', e2') of
                           _ -> error "Incompatible types"
                           where (e1', _) = eval (e1, env)
                                 (e2', _) = eval (e2, env)
+                                
+eval ((TmLTEQ e1 e2), env) = case (e1', e2') of
+                          ((TmInt n), (TmInt m)) -> if n <= m then (TmTrue, env) else (TmFalse, env)
+                          _ -> error "Incompatible types"
+                          where (e1', _) = eval (e1, env)
+                                (e2', _) = eval (e2, env)
+
+eval ((TmGTEQ e1 e2), env) = case (e1', e2') of
+                          ((TmInt n), (TmInt m)) -> if n >= m then (TmTrue, env) else (TmFalse, env)
+                          _ -> error "Incompatible types"
+                          where (e1', _) = eval (e1, env)
+                                (e2', _) = eval (e2, env)
 
 eval ((TmEQ e1 e2), env) = case (e1n, e2n) of
                            ((TmInt n), (TmInt m)) -> if n == m then (TmTrue, env) else (TmFalse, env)

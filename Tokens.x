@@ -20,6 +20,8 @@ $white+     ;
   \%            { tok (\p s -> TokenMod p)}
   \<            { tok (\p s -> TokenLT p)}
   \>            { tok (\p s -> TokenMT p)}
+  \<\=          { tok (\p s -> TokenLTEQ p)}
+  \>\=          { tok (\p s -> TokenMTEQ p)}
   \=            { tok (\p s -> TokenEq p)}
   \+\=          { tok (\p s -> TokenPlusEquals p)}
   \-\=          { tok (\p s -> TokenMinusEquals p)}
@@ -59,6 +61,8 @@ data Token = TokenInt AlexPosn Int
            | TokenMod AlexPosn
            | TokenLT AlexPosn
            | TokenMT AlexPosn
+           | TokenLTEQ AlexPosn
+           | TokenMTEQ AlexPosn
            | TokenEq AlexPosn
            | TokenPlusEquals AlexPosn
            | TokenMinusEquals AlexPosn
@@ -95,6 +99,8 @@ tokenPosn (TokenMul (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenMod (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenLT (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenMT (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenLTEQ (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenMTEQ (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenEq (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenPlusEquals (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenMinusEquals (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
