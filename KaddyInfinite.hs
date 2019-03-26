@@ -4,6 +4,7 @@ import Evals
 import System.Environment
 import Control.Exception
 import System.IO
+import Data.List
 
 main :: IO ()
 main = catch main' noParse
@@ -12,7 +13,6 @@ main' = do (filename : _) <- getArgs
            sourceText <- readFile filename
            let sourceTokens = alexScanTokens sourceText
            let parsedProg = parseCalc sourceTokens
-           putStrLn 
            contents <- getContents
            let cLines = lines contents
            parseProgram cLines parsedProg []
@@ -32,6 +32,9 @@ printLines (s:ss) = do let n = (read s :: Int) * 3
 parseProgram :: [String] -> [Expr] -> Environment -> IO ()
 parseProgram [] _ _ = do return ()
 parseProgram (l:ls) prog env = do let (e, newEnv) = evalLoop prog env l
-                                  hPutStr stdout ((show e) ++ "\n") -- TODO: Add a toString function here
+                                  hPutStr stdout (printOut e) -- TODO: Add a toString function here
                                   parseProgram ls prog newEnv
                              
+printOut :: Expr -> String
+printOut (TmInt n) = (show n) ++ "\n"
+printOut (TmOut ls) = intercalate " " (map (\(TmInt n) -> (show n)) ls) ++ "\n"

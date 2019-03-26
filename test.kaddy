@@ -1,3 +1,6 @@
+globals {acc = 0}
 start {
-    stream0 | 2 | 3;
+    out = acc;
+    acc = acc + 1;
+    acc | acc;
 }
