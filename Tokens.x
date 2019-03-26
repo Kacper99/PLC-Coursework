@@ -17,6 +17,7 @@ $white+     ;
   \-            { tok (\p s -> TokenMinus p)}
   \/            { tok (\p s -> TokenDiv p)}
   \*            { tok (\p s -> TokenMul p)}
+  \%            { tok (\p s -> TokenMod p)}
   \<            { tok (\p s -> TokenLT p)}
   \>            { tok (\p s -> TokenMT p)}
   \=            { tok (\p s -> TokenEq p)}
@@ -25,15 +26,11 @@ $white+     ;
   if            { tok (\p s -> TokenIf p)}
   then          { tok (\p s -> TokenThen p)}
   else          { tok (\p s -> TokenElse p)}
-  while         { tok (\p s -> TokenWhile p)}
-  do            { tok (\p s -> TokenDo p)}
   \,            { tok (\p s -> TokenComma p)}
   \(            { tok (\p s -> TokenLParen p)}
   \)            { tok (\p s -> TokenRParen p)}
   \[            { tok (\p s -> TokenOpenStream p)}
   \]            { tok (\p s -> TokenCloseStream p)}
-  print         { tok (\p s -> TokenPrint p)}
-  println       { tok (\p s -> TokenPrintLine p)}
   \;            { tok (\p s -> TokenEndStatement p)}
   \{            { tok (\p s -> TokenLeftCurly p)}
   \}            { tok (\p s -> TokenRightCurly p)}
@@ -59,6 +56,7 @@ data Token = TokenInt AlexPosn Int
            | TokenMinus AlexPosn
            | TokenDiv AlexPosn
            | TokenMul AlexPosn
+           | TokenMod AlexPosn
            | TokenLT AlexPosn
            | TokenMT AlexPosn
            | TokenEq AlexPosn
@@ -67,15 +65,11 @@ data Token = TokenInt AlexPosn Int
            | TokenIf AlexPosn
            | TokenThen AlexPosn
            | TokenElse AlexPosn
-           | TokenWhile AlexPosn
-           | TokenDo AlexPosn
            | TokenComma AlexPosn
            | TokenLParen AlexPosn
            | TokenRParen AlexPosn
            | TokenOpenStream AlexPosn
            | TokenCloseStream AlexPosn
-           | TokenPrint AlexPosn
-           | TokenPrintLine AlexPosn
            | TokenEndStatement AlexPosn
            | TokenLeftCurly AlexPosn
            | TokenRightCurly AlexPosn
@@ -98,6 +92,7 @@ tokenPosn (TokenAdd (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenMinus (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenDiv (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenMul (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenMod (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenLT (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenMT (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenEq (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
@@ -106,15 +101,11 @@ tokenPosn (TokenMinusEquals (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenIf (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenThen (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenElse (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
-tokenPosn (TokenWhile (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
-tokenPosn (TokenDo (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenComma (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenLParen (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenRParen (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenOpenStream (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenCloseStream (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
-tokenPosn (TokenPrint (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
-tokenPosn (TokenPrintLine (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenEndStatement (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenLeftCurly (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenRightCurly (AlexPn a l c)) = show(l) ++ ":" ++ show(c)

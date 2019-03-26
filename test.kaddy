@@ -1,6 +1,3 @@
-globals {acc = 0}
 start {
-    out = acc;
-    acc = acc + 1;
-    acc | acc;
+    [1, 2] * [1, 2];
 }

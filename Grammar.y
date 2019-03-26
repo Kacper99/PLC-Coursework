@@ -15,21 +15,18 @@ import Tokens
     '-'         { TokenMinus _ }
     '/'         { TokenDiv _ }
     '*'         { TokenMul _ }
+    '%'         { TokenMod _ }
     '<'         { TokenLT _ }
     '>'         { TokenMT _ }
     '='         { TokenEq _ }
     if          { TokenIf _ }
     then        { TokenThen _ }
     else        { TokenElse _ }
-    while       { TokenWhile _ }
-    do          { TokenDo _ }
     ','         { TokenComma _ }
     '('         { TokenLParen _ }
     ')'         { TokenRParen _ }
     '['         { TokenOpenStream _ }
     ']'         { TokenCloseStream _ }
-    print       { TokenPrint _ }
-    println     { TokenPrintLine _ }
     ';'         { TokenEndStatement _ }
     '{'         { TokenLeftCurly _ }
     '}'         { TokenRightCurly _ }
@@ -43,10 +40,10 @@ import Tokens
     '|'         { TokenPipe _ }
 
 %right '='
-%nonassoc '<' '>'
+%nonassoc '<' '>' '(' ')'
 %left '&&' '||'
 %left '+' '-'
-%left '*' '/'
+%left '*' '/' '%'
 %left ';'
 
 %%
@@ -63,14 +60,17 @@ Block : Exp                                                   { $1 }
 Exp : Exp '+' Exp                                             { TmAdd $1 $3 }
     | Exp '-' Exp                                             { TmSub $1 $3 }
     | Exp '*' Exp                                             { TmMult $1 $3 }
-    | Exp '/' Exp                                             { TmDiv $1 $3}
+    | Exp '/' Exp                                             { TmDiv $1 $3 }
+    | Exp '%' Exp                                             { TmMod $1 $3 }
 
     | int '|' Outs                                            { TmOut ((TmInt $1) : $3)}
     | var '|' Outs                                            { TmOut ((TmVar $1) : $3)}
 
     | int                                                     { TmInt $1 }
     | var                                                     { TmVar $1 }
-    | '[' List ']'                                            { TmList $2 } --TODO: Change this to an actual way of setting a variable
+    | '[' List ']'                                            { TmList $2 }
+
+    | '(' Exp ')'                                             { $2 }
 
 Outs : int                                                    { [TmInt $1] }
      | var                                                    { [TmVar $1] }
@@ -110,6 +110,7 @@ data Expr = TmIf Expr [Expr] [Expr]
           | TmSub Expr Expr
           | TmMult Expr Expr
           | TmDiv Expr Expr
+          | TmMod Expr Expr
 
           | TmOut [Expr]
 

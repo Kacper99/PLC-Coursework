@@ -51,14 +51,22 @@ eval ((TmOr e1 e2), env) = if (b1 == TmFalse) && (b2 == TmFalse) then (TmFalse, 
                          where (b1, _) = eval (e1, env)
                                (b2, _) = eval (e2, env)
 -- Multiplication
-eval ((TmMult e1 e2), env) = (TmInt (n * m), env)
-                           where ((TmInt n), _) = eval (e1, env)
-                                 ((TmInt m), _) = eval (e2, env)
-
+eval ((TmMult e1 e2), env) = case (e1', e2') of
+                             ((TmInt n), (TmInt m)) -> (TmInt (n * m), env)
+                             _ -> error "incompatible types"
+                             where (e1', _) = eval (e1, env)
+                                   (e2', _) = eval (e2, env)
+                                   
 -- Division
 eval ((TmDiv e1 e2), env) = (TmInt (n `div` m), env)
                           where ((TmInt n), _) = eval (e1, env)
                                 ((TmInt m), _) = eval (e2, env)
+
+eval ((TmMod e1 e2), env) = case (e1', e2') of
+                            ((TmInt n), (TmInt m)) -> (TmInt (n `mod` m), env)
+                            _ -> error "incompatible types"
+                            where (e1', _) = eval (e1, env)
+                                  (e2', _) = eval (e2, env)
 -- Adding
 eval ((TmAdd (TmInt n) (TmInt m)), env) = (TmInt (n + m), env)
 eval ((TmAdd e@(TmInt n) (TmList l)), env) = (TmList (e : l), env) -- Add to start of list
