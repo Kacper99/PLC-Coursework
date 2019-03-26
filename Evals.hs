@@ -53,31 +53,31 @@ eval ((TmOr e1 e2), env) = if (b1 == TmFalse) && (b2 == TmFalse) then (TmFalse, 
 -- Multiplication
 eval ((TmMult e1 e2), env) = case (e1', e2') of
                              ((TmInt n), (TmInt m)) -> (TmInt (n * m), env)
-                             _ -> error "incompatible types"
+                             _ -> error "Incompatible types"
                              where (e1', _) = eval (e1, env)
                                    (e2', _) = eval (e2, env)
 
 -- Division
 eval ((TmDiv e1 e2), env) = case (e1', e2') of
                            ((TmInt n), (TmInt m)) -> (TmInt (n `div` m), env)
-                           _ -> error "incompatible types"
+                           _ -> error "Incompatible types"
                            where (e1', _) = eval (e1, env)
                                  (e2', _) = eval (e2, env)
 
 -- Modulus
 eval ((TmMod e1 e2), env) = case (e1', e2') of
                             ((TmInt n), (TmInt m)) -> (TmInt (n `mod` m), env)
-                            _ -> error "incompatible types"
+                            _ -> error "Incompatible types"
                             where (e1', _) = eval (e1, env)
                                   (e2', _) = eval (e2, env)
 -- Adding
-eval ((TmAdd (TmInt n) (TmInt m)), env) = (TmInt (n + m), env)
-eval ((TmAdd e@(TmInt n) (TmList l)), env) = (TmList (e : l), env) -- Add to start of list
-eval ((TmAdd (TmList l) e@(TmInt n)), env) = (TmList (l ++ [e]), env) -- Add to end of list
-eval ((TmAdd e1 e2), env) = eval ((TmAdd e1' e2'), env)
-                          where (e1', _) = eval (e1, env)
-                                (e2', _) = eval (e2, env)
-                        
+eval ((TmAdd e1 e2), env ) = case (e1', e2') of
+                             ((TmInt n), (TmInt m)) -> (TmInt (n + m), env)
+                             (e@(TmInt n), (TmList l)) -> (TmList (e : l), env) -- Add to start of list
+                             ((TmList l), e@(TmInt n)) -> (TmList (l ++ [e]), env) -- Add to end of list
+                             _ -> error "Incompatible types"
+                             where (e1', _) = eval (e1, env)
+                                   (e2', _) = eval (e2, env)
 -- Subtracting
 eval ((TmSub (TmInt n) (TmInt m)), env) = (TmInt (n - m), env)
 eval ((TmSub e1 e2), env) = eval ((TmSub e1' e2'), env)
