@@ -99,6 +99,9 @@ eval ((TmSub e1 e2), env) = case (e1', e2') of
                             where (e1', _) = eval (e1, env)
                                   (e2', _) = eval (e2, env)
 
+eval ((TmPlusEqual s e), env) = eval ((TmAdd (getVarBinding s env) e), env)
+eval ((TmMinusEqual s e), env) = eval ((TmSub (getVarBinding s env) e), env)
+
 evalLoop :: [Expr] -> Environment -> String -> State
 evalLoop ((TmGlobals e@(v:vs)):es) env line | checkIfBinded s env = evalLoop es env line
                                                       | otherwise = evalLoop es newEnv line

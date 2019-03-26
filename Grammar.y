@@ -21,6 +21,8 @@ import Tokens
     '<='        { TokenLTEQ _ }
     '>='        { TokenMTEQ _ }
     '='         { TokenEq _ }
+    '+='        { TokenPlusEquals _ }
+    '-='        { TokenMinusEquals _ }
     if          { TokenIf _ }
     then        { TokenThen _ }
     else        { TokenElse _ }
@@ -42,7 +44,7 @@ import Tokens
     '|'         { TokenPipe _ }
 
 %right '='
-%nonassoc '<' '>' '(' ')'
+%nonassoc '<' '>' '(' ')' '+=' '-='
 %left '&&' '||'
 %left '+' '-'
 %left '*' '/' '%'
@@ -64,6 +66,9 @@ Exp : Exp '+' Exp                                             { TmAdd $1 $3 }
     | Exp '*' Exp                                             { TmMult $1 $3 }
     | Exp '/' Exp                                             { TmDiv $1 $3 }
     | Exp '%' Exp                                             { TmMod $1 $3 }
+
+    | var '+=' Exp                                            { TmPlusEqual $1 $3 }
+    | var '-=' Exp                                            { TmMinusEqual $1 $3 }
 
     | int '|' Outs                                            { TmOut ((TmInt $1) : $3)}
     | var '|' Outs                                            { TmOut ((TmVar $1) : $3)}
@@ -123,6 +128,9 @@ data Expr = TmIf Expr [Expr] [Expr]
           | TmMult Expr Expr
           | TmDiv Expr Expr
           | TmMod Expr Expr
+
+          | TmPlusEqual String Expr
+          | TmMinusEqual Expr Expr
 
           | TmOut [Expr]
 
