@@ -50,12 +50,12 @@ import Tokens
 Program : start '{' Statements '}'                            { [TmStart $3] }
         | globals '{' Vars '}' start '{' Statements '}'       { [TmGlobals $3] ++ [TmStart $7]}
 
-Statements : Block ';' Statements { $1 : $3 }
-           | Block ';' { [$1] }
+Statements : Block ';' Statements                             { $1 : $3 }
+           | Block ';'                                        { [$1] }
 
 Block : Exp                                                   { $1 }
       | var '=' Exp                                           { TmSetVar $1 $3}
-      | if '(' BoolExp ')' then '{' Statements '}' else '{' Statements '}'            { TmIf $3 $7 $11 }
+      | if '(' BoolExp ')' '{' Statements '}' else '{' Statements '}'            { TmIf $3 $6 $10 }
 
 Exp : Exp '+' Exp                                             { TmAdd $1 $3 }
     | Exp '-' Exp                                             { TmSub $1 $3 }
@@ -66,7 +66,10 @@ Exp : Exp '+' Exp                                             { TmAdd $1 $3 }
     | int '|' Outs                                            { TmOut ((TmInt $1) : $3)}
     | var '|' Outs                                            { TmOut ((TmVar $1) : $3)}
 
-    | Types                                                   { $1 }
+    | int                                                   { TmInt $1 }
+    | var                                                   { TmVar $1 }
+    | '[' List ']'                                          { TmList $2 }
+    | '[' ']'                                               { TmList [] }
 
     | '(' Exp ')'                                             { $2 }
 
@@ -93,6 +96,8 @@ BoolExp : Exp '<' Exp                                         { TmLT $1 $3 }
 
         | true                                                { TmTrue }
         | false                                               { TmFalse }
+
+        | '(' BoolExp ')'                                     { $2 }
 
 List : int                                                    { [TmInt $1] }
      | int ',' List                                           { (TmInt $1) : $3 }

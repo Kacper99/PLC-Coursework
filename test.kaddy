@@ -1,5 +1,8 @@
-globals { list = []}
 start {
-    list = list + 1;
-    stream0 | list;
+    if (2 > 1) {
+        1;
+    } else {
+        0;
+    };
+    3 - 10;
 }
