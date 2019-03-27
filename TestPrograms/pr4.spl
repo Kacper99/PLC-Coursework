@@ -1,5 +1,5 @@
 globals {acc = 0}
 start {
-    acc = acc + stream0;
+    acc += stream0;
     acc;
 }

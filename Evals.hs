@@ -11,6 +11,10 @@ eval s@((TmInt n), env) = s -- Just return the integer
 eval ((TmVar s, env)) = (getVarBinding s env, env) -- Just return the value of the variable
 eval s@((TmList l , env)) = s
 eval ((TmOut l), env) = ((TmOut (varsToBindings l env)), env)
+eval ((TmOutList e), env) = case e' of
+                            (TmList l) -> (TmOutList (TmList (varsToBindings l env)), env)
+                            _ -> error "Not printing a list"
+                            where (e', env') = eval (e, env)
 
 eval ((TmSetVar s e), env) = (e', (s, e'):env) -- Return the variable and the variable added to the environment
                            where (e', env') = (eval (e, env))
@@ -109,22 +113,30 @@ eval ((TmMinusEqual s e), env) = eval (TmSetVar s (TmSub (TmVar s) e), env)
 -- Get
 eval ((TmGet e1 e2), env) = case (e1', e2') of
                             ((TmList l), (TmInt n)) -> if ((n >= (length l)) || (n < 0)) then error ("index " ++ show n ++ " out of bounds") else (l !! n, env)
-                            _ -> error "Incopatible types"
+                            _ -> error "Incompatible types"
                             where (e1', _) = eval (e1, env)
                                   (e2', _) = eval (e2, env)
 
+-- Remove from list                                  
 eval ((TmRemove e1 e2), env) = case (e1', e2') of
-                            ((TmList l), (TmInt n)) -> if ((n >= (length l)) || (n < 0)) then error ("index " ++ show n ++ " out of bounds") else (TmList (removeN n l) , env)
-                            _ -> error "Incopatible types"
-                            where (e1', _) = eval (e1, env)
-                                  (e2', _) = eval (e2, env)
+                               ((TmList l), (TmInt n)) -> if ((n >= (length l)) || (n < 0)) then error ("index " ++ show n ++ " out of bounds") else (TmList (removeN n l) , env)
+                               _ -> error "Incompatible types"
+                               where (e1', _) = eval (e1, env)
+                                     (e2', _) = eval (e2, env)
+
+-- Sun a list
+eval ((TmSum e1), env) = case e1' of
+                         TmList l -> (TmInt(sum (map (\(TmInt n) -> n) l)), env)
+                         _ -> error "Incompatible types"
+                         where (e1', _ ) = eval (e1 ,env)
+                          
 
 -- Evaluation stuff
 evalLoop :: [Expr] -> Environment -> String -> State
 evalLoop ((TmGlobals e@(v:vs)):es) env line | checkIfBinded s env = evalLoop es env line
-                                                      | otherwise = evalLoop es newEnv line
-                                                      where newEnv = bindVars e env
-                                                            (TmSetVar s _ ) = v
+                                            | otherwise = evalLoop es newEnv line
+                                            where newEnv = bindVars e env
+                                                  (TmSetVar s _ ) = v
 evalLoop ((TmStart es):_) env line = evalLoop es env line
 evalLoop prog env line = evLoop (prog, newEnv) 
                        where newEnv = (parseStream line "" 0) ++ env

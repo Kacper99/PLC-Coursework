@@ -39,6 +39,7 @@ printOut :: Expr -> String
 printOut (TmInt n) = (show n) ++ "\n"
 printOut (TmList l) = "[" ++ intercalate ", " (map (\(TmInt n) -> (show n)) l) ++ "]\n" 
 printOut (TmOut ls) = intercalate " " (map printOut' ls) ++ "\n"
+printOut (TmOutList (TmList ls)) = intercalate "\n" (map (\(TmInt n) -> (show n)) ls) ++ "\n"
 printOut l = show l
 
 printOut' :: Expr -> String

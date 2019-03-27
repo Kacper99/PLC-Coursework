@@ -44,11 +44,13 @@ import Tokens
     '|'         { TokenPipe _ }
     '~'         { TokenGet _ }
     '\~'        { TokenRemove _ }
+    'sum'        { TokenSum _ }
 
 %right '='
 %nonassoc '<' '>' '(' ')' 
 %left '&&' '||'
 %right '\~'
+%right 'sum'
 %right '~'
 %right '+=' '-='
 %left '+' '-'
@@ -77,6 +79,8 @@ Exp : Exp '+' Exp                                             { TmAdd $1 $3 }
 
     | Exp '~' Exp                                             { TmGet $1 $3 }
     | Exp '\~' Exp                                            { TmRemove $1 $3 }
+    | 'sum' Exp                                               { TmSum $2 }
+    | '~' Exp                                                 { TmOutList $2 }
 
     | int '|' Outs                                            { TmOut ((TmInt $1) : $3)}
     | var '|' Outs                                            { TmOut ((TmVar $1) : $3)}
@@ -139,6 +143,8 @@ data Expr = TmIf Expr [Expr] [Expr]
 
           | TmGet Expr Expr
           | TmRemove Expr Expr
+          | TmSum Expr
+          | TmOutList Expr
 
           | TmOut [Expr]
 
