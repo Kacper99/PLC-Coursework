@@ -1,0 +1,6 @@
+globals {a = [], nums = []}
+start {
+    nums = nums + stream0;
+    a = a + nums;
+    sum a;
+}

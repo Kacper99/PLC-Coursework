@@ -1,0 +1,6 @@
+globals{temp = 0}
+start {
+    out = temp;
+    temp = stream0;
+    stream0 | out;
+}
