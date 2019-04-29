@@ -18,6 +18,7 @@ $white+     ;
   \/            { tok (\p s -> TokenDiv p)}
   \*            { tok (\p s -> TokenMul p)}
   \%            { tok (\p s -> TokenMod p)}
+  \^            { tok (\p s -> TokenPower p)}
   \<            { tok (\p s -> TokenLT p)}
   \>            { tok (\p s -> TokenMT p)}
   \<\=          { tok (\p s -> TokenLTEQ p)}
@@ -62,6 +63,7 @@ data Token = TokenInt AlexPosn Int
            | TokenDiv AlexPosn
            | TokenMul AlexPosn
            | TokenMod AlexPosn
+           | TokenPower AlexPosn
            | TokenLT AlexPosn
            | TokenMT AlexPosn
            | TokenLTEQ AlexPosn
@@ -103,6 +105,7 @@ tokenPosn (TokenMinus (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenDiv (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenMul (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenMod (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
+tokenPosn (TokenPower (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenLT (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenMT (AlexPn a l c)) = show(l) ++ ":" ++ show(c)
 tokenPosn (TokenLTEQ (AlexPn a l c)) = show(l) ++ ":" ++ show(c)

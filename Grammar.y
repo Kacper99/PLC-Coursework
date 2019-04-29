@@ -16,6 +16,7 @@ import Tokens
     '/'         { TokenDiv _ }
     '*'         { TokenMul _ }
     '%'         { TokenMod _ }
+    '^'         { TokenPower _ }
     '<'         { TokenLT _ }
     '>'         { TokenMT _ }
     '<='        { TokenLTEQ _ }
@@ -55,6 +56,7 @@ import Tokens
 %right '+=' '-='
 %left '+' '-'
 %left '*' '/' '%'
+%left '^'
 %left ';'
 
 %%
@@ -73,6 +75,7 @@ Exp : Exp '+' Exp                                             { TmAdd $1 $3 }
     | Exp '*' Exp                                             { TmMult $1 $3 }
     | Exp '/' Exp                                             { TmDiv $1 $3 }
     | Exp '%' Exp                                             { TmMod $1 $3 }
+    | Exp '^' Exp                                             { TmPower $1 $3 }
 
     | var '+=' Exp                                            { TmPlusEqual $1 $3 }
     | var '-=' Exp                                            { TmMinusEqual $1 $3 }
@@ -137,6 +140,7 @@ data Expr = TmIf Expr [Expr] [Expr]
           | TmMult Expr Expr
           | TmDiv Expr Expr
           | TmMod Expr Expr
+          | TmPower Expr Expr
 
           | TmPlusEqual String Expr
           | TmMinusEqual String Expr

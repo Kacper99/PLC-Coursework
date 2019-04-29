@@ -1,9 +1,0 @@
-globals {acc = -1}
-start {
-    acc += 1;
-    if (acc == 0) {
-        ~ [0] + stream0;
-    } else {
-        stream0;
-    };
-}

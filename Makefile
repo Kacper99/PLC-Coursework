@@ -7,14 +7,14 @@
 #   
 
 # Files that need to be generated from other files
-DEPEND += Tokens.hs Grammar.hs Evals.hs KaddyInfinite.hs
+DEPEND += Tokens.hs Grammar.hs Evals.hs Kaddy.hs
 
 # When "make" is invoked with no arguments, we build an executable 
 #  after building everything that it depends on
 
 # Build an executable for Toy interpreter
-KaddyInfinite: $(DEPEND) KaddyInfinite.hs
-	ghc --make -o myinterpreter KaddyInfinite.hs
+KaddyInfinite: $(DEPEND) Kaddy.hs
+	ghc --make -o myinterpreter Kaddy.hs
 
 
 # Generate ML files from a parser definition file

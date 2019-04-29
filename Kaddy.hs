@@ -7,7 +7,7 @@ import System.IO
 import Data.List
 
 main :: IO ()
-main = catch main' noParse
+main = catch main' printError
 
 main' = do (filename : _) <- getArgs
            sourceText <- readFile filename
@@ -17,21 +17,14 @@ main' = do (filename : _) <- getArgs
            let cLines = lines contents
            parseProgram cLines parsedProg []
 
-noParse :: ErrorCall -> IO ()
-noParse e = do let err =  show e
-               hPutStr stderr err
-               return ()
-
-printLines :: [String] -> IO ()
-printLines (s:[]) = do let n = (read s :: Int) * 3
-                       hPutStr stdout (show n)
-printLines (s:ss) = do let n = (read s :: Int) * 3
-                       hPutStr stdout (show n)
-                       printLines ss
+printError :: ErrorCall -> IO ()
+printError e = do let err =  show e
+                  hPutStr stderr err
+                  return ()
 
 parseProgram :: [String] -> [Expr] -> Environment -> IO ()
 parseProgram [] _ _ = do return ()
-parseProgram (l:ls) prog env = do let (e, newEnv) = evalLoop prog env l
+parseProgram (l:ls) prog env = do let (e, newEnv) = beginLoop prog env l
                                   hPutStr stdout (printOut e) -- TODO: Add a toString function here
                                   parseProgram ls prog newEnv
                              

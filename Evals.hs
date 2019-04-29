@@ -1,8 +1,7 @@
 module Evals where
 import Grammar
 
--- Data structure as defined in Grammar.y:
--- type Environment = [ (String,Exp) ]
+-- Environment = [ (String,Exp) ]
 
 type State = (Expr, Environment)
 
@@ -22,7 +21,6 @@ eval ((TmSetVar s e), env) = (e', (s, e'):env) -- Return the variable and the va
 -- If statement
 eval ((TmIf b e1 e2), env) | b' == TmTrue = evLoop (e1, env) -- If the if statement is true evaluate the left expression
                            | b' == TmFalse = evLoop (e2, env) -- If the if statement is false evaluate the right expression instead
-                           | otherwise = error "You've managed to fuck it up hard"
                            where (b', _) = eval (b, env) -- Evaluate the boolean expression
 
 -- Boolean expressions
@@ -89,6 +87,12 @@ eval ((TmMod e1 e2), env) = case (e1', e2') of
                             where (e1', _) = eval (e1, env)
                                   (e2', _) = eval (e2, env)
 
+-- Power
+eval ((TmPower e1 e2), env) = case (e1', e2') of
+                              ((TmInt n), (TmInt m)) -> (TmInt (n ^ m), env)
+                              _ -> error "Incompatible types"
+                              where (e1', _) = eval (e1, env)
+                                    (e2', _) = eval (e2, env)
 -- Adding
 eval ((TmAdd e1 e2), env ) = case (e1', e2') of
                              ((TmInt n), (TmInt m)) -> (TmInt (n + m), env)
@@ -132,13 +136,13 @@ eval ((TmSum e1), env) = case e1' of
                           
 
 -- Evaluation stuff
-evalLoop :: [Expr] -> Environment -> String -> State
-evalLoop ((TmGlobals e@(v:vs)):es) env line | checkIfBinded s env = evalLoop es env line
-                                            | otherwise = evalLoop es newEnv line
+beginLoop :: [Expr] -> Environment -> String -> State
+beginLoop ((TmGlobals e@(v:vs)):es) env line | checkIfBinded s env = beginLoop es env line
+                                            | otherwise = beginLoop es newEnv line
                                             where newEnv = bindVars e env
                                                   (TmSetVar s _ ) = v
-evalLoop ((TmStart es):_) env line = evalLoop es env line
-evalLoop prog env line = evLoop (prog, newEnv) 
+beginLoop ((TmStart es):_) env line = beginLoop es env line
+beginLoop prog env line = evLoop (prog, newEnv) 
                        where newEnv = (parseStream line "" 0) ++ env
 
 evLoop :: ([Expr], Environment) -> State
