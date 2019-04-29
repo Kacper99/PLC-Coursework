@@ -1,0 +1,7 @@
+globals {a = 0, b = 0, c = 0}
+start {
+    c = b;
+    b = a;
+    a = stream0 + c;
+    a;
+}

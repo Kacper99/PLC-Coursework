@@ -1,0 +1,4 @@
+start {
+    a = stream0 - stream1;
+    a | stream0;
+}
